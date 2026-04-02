@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#D84315">
+<meta name="description" content="मीना समाज वैवाहिक पोर्टल — जीवनसाथी खोजें, गोत्र और जिले के अनुसार filter करें।">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="मीना वैवाहिक">
+<title>मीना समाज वैवाहिक</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- ════════════════════════════════════════════════
+     Google AdSense — अपना Publisher ID यहाँ डालें
+     जब AdSense approve हो तो नीचे वाली line uncomment करें:
+     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+════════════════════════════════════════════════ -->
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#D84315; --p-bg:#FBE9E7;
+  --bg:#F4F4F4; --surface:#FFFFFF;
+  --border:#E8E8E8;
+  --t1:#1A1A1A; --t2:#666666; --t3:#AAAAAA;
+  --r:12px; --r-s:8px;
+  --nav-h:58px;
+}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Noto Sans Devanagari','Poppins',sans-serif;
+  background:var(--bg);color:var(--t1);
+  min-height:100dvh;-webkit-font-smoothing:antialiased;
+  padding-bottom:var(--nav-h);
+}
+
+/* ── PWA INSTALL BANNER ─────────────────────────── */
+#installBanner{
+  display:none;
+  background:var(--p);color:#fff;
+  padding:10px 16px;
+  align-items:center;justify-content:space-between;gap:10px;
+}
+#installBanner p{font-size:13px;font-weight:500;flex:1;}
+#installBanner .ib-btns{display:flex;gap:8px;flex-shrink:0;}
+.ib-install{
+  padding:6px 14px;background:#fff;color:var(--p);
+  border:none;border-radius:6px;font-size:12px;
+  font-weight:700;cursor:pointer;font-family:inherit;
+}
+.ib-close{
+  padding:6px 10px;background:rgba(255,255,255,.2);color:#fff;
+  border:none;border-radius:6px;font-size:12px;cursor:pointer;
+}
+
+/* ── TOPBAR ─────────────────────────────────────── */
+.topbar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:50;
+}
+.topbar-main{
+  display:flex;align-items:center;justify-content:space-between;
+  height:54px;padding:0 16px;max-width:900px;margin:0 auto;
+}
+.logo{display:flex;align-items:center;gap:8px;}
+.logo-mark{
+  width:32px;height:32px;border-radius:8px;background:var(--p);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:#fff;flex-shrink:0;
+}
+.logo-text{font-size:16px;font-weight:700;letter-spacing:-.3px;}
+.logo-text em{color:var(--p);font-style:normal;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.count-tag{
+  font-size:12px;font-weight:600;color:var(--p);
+  background:var(--p-bg);padding:3px 10px;border-radius:20px;
+}
+.link-btn{
+  width:36px;height:36px;border-radius:var(--r-s);
+  border:1px solid var(--border);background:var(--surface);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:15px;color:var(--t2);transition:all .15s;
+}
+.link-btn.active{border-color:var(--p);background:var(--p-bg);color:var(--p);}
+
+.url-drawer{border-top:1px solid var(--border);padding:10px 16px 12px;display:none;}
+.url-drawer.open{display:block;}
+.url-row{display:flex;gap:8px;max-width:900px;margin:0 auto;}
+.url-row input{
+  flex:1;padding:9px 12px;border:1.5px solid var(--border);
+  border-radius:var(--r-s);font-size:13px;font-family:inherit;
+  outline:none;background:var(--bg);color:var(--t1);transition:border-color .2s;
+}
+.url-row input:focus{border-color:var(--p);}
+.url-row input::placeholder{color:var(--t3);font-size:12px;}
+.btn-load{
+  padding:9px 18px;background:var(--p);color:#fff;border:none;
+  border-radius:var(--r-s);font-size:13px;font-weight:600;
+  cursor:pointer;font-family:inherit;white-space:nowrap;
+}
+
+/* ── AD BANNER SLOT ─────────────────────────────── */
+.ad-slot{
+  max-width:900px;margin:8px auto 0;padding:0 16px;
+}
+.ad-placeholder{
+  width:100%;height:60px;background:var(--surface);
+  border:1px dashed var(--border);border-radius:var(--r-s);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--t3);
+  /* Remove this block when real AdSense is placed */
+}
+
+/* ── SEARCH ROW ─────────────────────────────────── */
+.search-bar{
+  padding:10px 16px;max-width:900px;margin:0 auto;
+  display:flex;gap:8px;align-items:center;
+}
+.search-wrap{flex:1;position:relative;}
+.search-wrap input{
+  width:100%;padding:11px 14px 11px 38px;
+  border:1.5px solid var(--border);border-radius:var(--r);
+  font-size:14px;font-family:inherit;outline:none;
+  background:var(--surface);color:var(--t1);
+  box-shadow:0 1px 4px rgba(0,0,0,.04);transition:border-color .2s;
+}
+.search-wrap input:focus{border-color:var(--p);}
+.search-wrap input::placeholder{color:var(--t3);}
+.si{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--t3);pointer-events:none;}
+.filter-btn{
+  width:44px;height:44px;flex-shrink:0;
+  border:1.5px solid var(--border);border-radius:var(--r);
+  background:var(--surface);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;box-shadow:0 1px 4px rgba(0,0,0,.04);
+  transition:all .15s;
+}
+.filter-btn.on{border-color:var(--p);background:var(--p-bg);}
+.filter-btn svg{width:18px;height:18px;stroke:var(--t2);fill:none;stroke-width:2;stroke-linecap:round;}
+.filter-btn.on svg{stroke:var(--p);}
+.f-dot{
+  position:absolute;top:7px;right:7px;width:7px;height:7px;
+  border-radius:50%;background:var(--p);border:2px solid var(--surface);display:none;
+}
+.filter-btn.on .f-dot{display:block;}
+
+/* ── CHIPS ──────────────────────────────────────── */
+.chips-row{
+  padding:0 16px 8px;max-width:900px;margin:0 auto;
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+}
+.chips-row::-webkit-scrollbar{display:none;}
+.chip{
+  display:flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;
+  background:var(--p-bg);border:1px solid var(--p);
+  font-size:11px;font-weight:600;color:var(--p);
+  white-space:nowrap;flex-shrink:0;cursor:pointer;
+}
+
+/* ── CARDS ──────────────────────────────────────── */
+.cards-wrap{
+  max-width:900px;margin:0 auto;
+  padding:4px 16px 16px;
+  display:grid;grid-template-columns:1fr;gap:10px;
+}
+@media(min-width:600px){.cards-wrap{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:900px){.cards-wrap{grid-template-columns:repeat(3,1fr);}}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+  animation:up .2s ease both;
+  box-shadow:0 1px 6px rgba(0,0,0,.05);
+}
+@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.c-head{padding:14px 14px 10px;display:flex;gap:11px;}
+.c-av{
+  width:46px;height:46px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;overflow:hidden;
+}
+.c-av img{width:100%;height:100%;object-fit:cover;}
+.c-meta{flex:1;min-width:0;}
+.c-name{font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.c-sub{font-size:12px;color:var(--t2);margin-top:2px;}
+.c-tags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;}
+.tag{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;background:var(--bg);border:1px solid var(--border);color:var(--t2);}
+.tag.hi{background:var(--p-bg);border-color:transparent;color:var(--p);}
+.c-div{height:1px;background:var(--border);margin:0 14px;}
+.c-body{padding:10px 14px;}
+.c-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px;}
+.cf-l{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;}
+.cf-v{font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;}
+.c-gotra{margin-top:10px;padding:8px 10px;background:var(--bg);border-radius:var(--r-s);}
+.g-head{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
+.g-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.g-tag{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--t2);}
+.g-tag small{font-size:9px;color:var(--t3);margin-right:2px;}
+.g-tag.bad{background:#FFF3F2;border-color:#FFCDD2;color:#C62828;}
+.c-addr{padding:8px 14px 0;font-size:12px;color:var(--t2);display:flex;gap:5px;}
+.c-addr+.c-addr{padding-top:3px;}
+.c-addr-note{padding:6px 14px 10px;font-size:11px;color:var(--t3);font-style:italic;}
+.c-foot{
+  padding:10px 14px 12px;
+  display:grid;grid-template-columns:1fr 1fr;gap:7px;
+  border-top:1px solid var(--border);
+}
+.c-btn{
+  padding:9px;border-radius:var(--r-s);border:none;
+  font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:opacity .15s;
+}
+.c-btn:active{opacity:.75;}
+.btn-wa{background:#25D366;color:#fff;}
+.btn-ph{background:var(--bg);border:1px solid var(--border);color:var(--t1);}
+
+/* ── EMPTY / LOADER ─────────────────────────────── */
+.empty{grid-column:1/-1;text-align:center;padding:64px 20px;color:var(--t3);}
+.empty .ei{font-size:44px;margin-bottom:12px;}
+.empty h3{font-size:16px;font-weight:600;color:var(--t2);margin-bottom:6px;}
+.empty p{font-size:13px;line-height:1.7;max-width:280px;margin:0 auto;}
+.spin{width:30px;height:30px;margin:0 auto 12px;border:3px solid var(--border);border-top-color:var(--p);border-radius:50%;animation:spin .6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── BOTTOM NAV ─────────────────────────────────── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  height:var(--nav-h);
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  display:flex;z-index:60;
+  box-shadow:0 -2px 12px rgba(0,0,0,.06);
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+  cursor:pointer;border:none;background:none;
+  font-family:inherit;color:var(--t3);
+  transition:color .15s;padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.nav-item.active{color:var(--p);}
+.nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.nav-item span{font-size:10px;font-weight:600;letter-spacing:.2px;}
+.nav-dot{width:4px;height:4px;border-radius:50%;background:var(--p);margin-top:-2px;opacity:0;}
+.nav-item.active .nav-dot{opacity:1;}
+
+/* ── FULL-SCREEN PAGE OVERLAY ───────────────────── */
+.page-overlay{
+  position:fixed;inset:0;background:var(--bg);
+  z-index:70;overflow-y:auto;
+  transform:translateX(100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  padding-bottom:var(--nav-h);
+}
+.page-overlay.open{transform:translateX(0);}
+
+.page-topbar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 16px;height:54px;
+  display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:5;
+}
+.back-btn{
+  width:36px;height:36px;border-radius:50%;border:1px solid var(--border);
+  background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:var(--t1);flex-shrink:0;
+}
+.page-title{font-size:16px;font-weight:700;}
+
+.page-body{max-width:700px;margin:0 auto;padding:20px 16px 32px;}
+
+/* Page content styles */
+.section-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;margin-bottom:12px;
+}
+.section-card h2{
+  font-size:15px;font-weight:700;color:var(--p);
+  margin-bottom:12px;padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.section-card p{font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:8px;}
+.section-card p:last-child{margin-bottom:0;}
+.section-card ul{padding-left:18px;margin-top:6px;}
+.section-card ul li{font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:4px;}
+.section-card strong{color:var(--t1);}
+
+.contact-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;border-bottom:1px solid var(--border);
+}
+.contact-row:last-child{border-bottom:none;}
+.cr-icon{
+  width:40px;height:40px;border-radius:10px;
+  background:var(--p-bg);display:flex;align-items:center;
+  justify-content:center;font-size:18px;flex-shrink:0;
+}
+.cr-info{}
+.cr-label{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;}
+.cr-value{font-size:14px;font-weight:600;color:var(--t1);margin-top:2px;}
+.cr-value a{color:var(--p);text-decoration:none;}
+
+.share-btn{
+  width:100%;padding:13px;background:var(--p);color:#fff;
+  border:none;border-radius:var(--r-s);font-size:15px;
+  font-weight:600;cursor:pointer;font-family:inherit;
+  margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+
+/* About hero */
+.about-hero{
+  background:linear-gradient(135deg,var(--p) 0%,#BF360C 100%);
+  border-radius:var(--r);padding:28px 20px;
+  text-align:center;color:#fff;margin-bottom:12px;
+}
+.about-hero .ah-icon{font-size:40px;margin-bottom:10px;}
+.about-hero h1{font-size:20px;font-weight:700;margin-bottom:6px;}
+.about-hero p{font-size:13px;opacity:.85;line-height:1.6;}
+
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.stat-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 8px;text-align:center;
+}
+.stat-num{font-size:22px;font-weight:700;color:var(--p);}
+.stat-lbl{font-size:11px;color:var(--t3);margin-top:2px;}
+
+/* ── SUBMISSION PAGE ────────────────────────────── */
+.sub-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:0;}
+.sub-tab{
+  flex:1;padding:12px;text-align:center;font-size:14px;font-weight:600;
+  color:var(--t3);cursor:pointer;border:none;background:none;
+  font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px;
+  transition:all .2s;
+}
+.sub-tab.on{color:var(--p);border-bottom-color:var(--p);}
+
+.tab-panel{display:none;padding:16px 16px 32px;max-width:700px;margin:0 auto;}
+.tab-panel.on{display:block;}
+
+/* Form */
+.form-section{margin-bottom:20px;}
+.form-section-title{
+  font-size:11px;font-weight:700;color:var(--t3);
+  text-transform:uppercase;letter-spacing:.5px;
+  margin-bottom:10px;padding-bottom:6px;
+  border-bottom:1px solid var(--border);
+}
+.form-row{margin-bottom:12px;}
+.form-row label{
+  display:block;font-size:12px;font-weight:600;color:var(--t2);
+  margin-bottom:5px;
+}
+.form-row label em{color:var(--p);font-style:normal;}
+.f-input,.f-select,.f-textarea{
+  width:100%;padding:10px 12px;
+  border:1.5px solid var(--border);border-radius:var(--r-s);
+  font-size:14px;font-family:inherit;outline:none;
+  background:var(--surface);color:var(--t1);
+  transition:border-color .2s;
+}
+.f-input:focus,.f-select:focus,.f-textarea:focus{border-color:var(--p);}
+.f-select{
+  -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%23AAAAAA' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:32px;
+}
+.f-textarea{min-height:80px;resize:vertical;line-height:1.6;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* AI Parser */
+.ai-box{
+  background:linear-gradient(135deg,var(--p) 0%,#BF360C 100%);
+  border-radius:var(--r);padding:16px;color:#fff;margin-bottom:16px;
+}
+.ai-box h3{font-size:15px;font-weight:700;margin-bottom:6px;}
+.ai-box p{font-size:12px;opacity:.85;line-height:1.6;}
+
+.ai-example{
+  background:rgba(255,255,255,.12);border-radius:8px;
+  padding:10px 12px;margin-top:10px;
+  font-size:12px;line-height:1.7;opacity:.9;
+}
+
+.api-key-row{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:12px;margin-bottom:12px;
+}
+.api-key-row label{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px;}
+.api-key-wrap{display:flex;gap:8px;}
+.api-key-wrap input{
+  flex:1;padding:9px 12px;border:1.5px solid var(--border);
+  border-radius:var(--r-s);font-size:13px;font-family:inherit;
+  outline:none;transition:border-color .2s;
+}
+.api-key-wrap input:focus{border-color:var(--p);}
+.btn-save-key{
+  padding:9px 14px;background:var(--p);color:#fff;
+  border:none;border-radius:var(--r-s);font-size:12px;
+  font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;
+}
+
+.ai-parse-area{margin-bottom:12px;}
+.ai-parse-area textarea{
+  width:100%;min-height:120px;padding:12px;
+  border:1.5px solid var(--border);border-radius:var(--r);
+  font-size:14px;font-family:inherit;outline:none;
+  resize:vertical;line-height:1.7;
+  transition:border-color .2s;
+}
+.ai-parse-area textarea:focus{border-color:var(--p);}
+
+.btn-parse{
+  width:100%;padding:12px;
+  background:var(--p);color:#fff;border:none;
+  border-radius:var(--r-s);font-size:15px;font-weight:600;
+  cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:opacity .15s;margin-bottom:16px;
+}
+.btn-parse:disabled{opacity:.5;cursor:not-allowed;}
+
+.parse-status{
+  padding:10px 12px;border-radius:var(--r-s);
+  font-size:13px;margin-bottom:12px;display:none;
+}
+.parse-status.loading{background:#E3F2FD;color:#1565C0;}
+.parse-status.success{background:#E8F5E9;color:#2E7D32;}
+.parse-status.error{background:#FFEBEE;color:#C62828;}
+
+/* Preview card */
+.preview-card{
+  background:var(--surface);border:2px solid var(--p);
+  border-radius:var(--r);padding:16px;margin-bottom:16px;
+  display:none;
+}
+.preview-title{
+  font-size:13px;font-weight:700;color:var(--p);
+  margin-bottom:12px;display:flex;align-items:center;gap:6px;
+}
+.preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pf-item{}
+.pf-l{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;}
+.pf-v{font-size:13px;font-weight:500;color:var(--t1);margin-top:1px;}
+
+/* Submit button */
+.btn-submit{
+  width:100%;padding:14px;
+  background:var(--p);color:#fff;border:none;
+  border-radius:var(--r-s);font-size:16px;font-weight:700;
+  cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:opacity .15s;
+}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+
+.success-box{
+  text-align:center;padding:40px 20px;display:none;
+}
+.success-box .s-icon{font-size:56px;margin-bottom:12px;}
+.success-box h3{font-size:20px;font-weight:700;color:var(--t1);margin-bottom:8px;}
+.success-box p{font-size:14px;color:var(--t2);line-height:1.6;}
+.btn-add-another{
+  margin-top:16px;padding:12px 24px;
+  background:var(--p-bg);color:var(--p);border:2px solid var(--p);
+  border-radius:var(--r-s);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:inherit;
+}
+
+/* ── FILTER PANEL ───────────────────────────────── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:80;display:none;backdrop-filter:blur(2px);}
+.overlay.on{display:block;}
+.panel{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--surface);border-radius:20px 20px 0 0;
+  z-index:81;max-height:88dvh;
+  display:flex;flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.32,.72,0,1);
+  max-width:560px;margin:0 auto;
+}
+.panel.on{transform:translateY(0);}
+.panel-handle{width:36px;height:4px;border-radius:2px;background:var(--border);margin:12px auto 0;}
+.panel-head{
+  padding:12px 20px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.panel-title{font-size:16px;font-weight:700;}
+.btn-reset{font-size:13px;color:var(--p);font-weight:600;background:none;border:none;cursor:pointer;font-family:inherit;}
+.panel-body{overflow-y:auto;flex:1;padding:16px 20px 8px;display:flex;flex-direction:column;gap:20px;}
+.panel-body::-webkit-scrollbar{width:3px;}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border);}
+.fg-label{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.pill-row{display:flex;flex-wrap:wrap;gap:6px;}
+.pill{
+  padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);
+  font-size:13px;cursor:pointer;background:var(--surface);color:var(--t2);
+  font-family:inherit;transition:all .15s;
+}
+.pill.on{background:var(--p);border-color:var(--p);color:#fff;}
+.range-row{display:flex;gap:8px;align-items:center;}
+.range-row input{
+  flex:1;padding:10px 12px;text-align:center;
+  border:1.5px solid var(--border);border-radius:var(--r-s);
+  font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;
+}
+.range-row input:focus{border-color:var(--p);}
+.range-sep{font-size:13px;color:var(--t3);flex-shrink:0;}
+.fg select,.fg-input{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);
+  border-radius:var(--r-s);font-size:14px;font-family:inherit;
+  outline:none;background:var(--surface);color:var(--t1);transition:border-color .2s;-webkit-appearance:none;
+}
+.fg select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%23AAAAAA' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;
+}
+.fg select:focus,.fg-input:focus{border-color:var(--p);}
+.zone-note{margin-top:8px;padding:8px 10px;background:#F1F8E9;border-radius:var(--r-s);font-size:11px;color:#558B2F;line-height:1.5;}
+.gotra-inputs{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+.panel-foot{padding:12px 20px 16px;border-top:1px solid var(--border);}
+.btn-apply{
+  width:100%;padding:13px;background:var(--p);color:#fff;border:none;
+  border-radius:var(--r-s);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
+}
+</style>
+</head>
+<body>
+
+<!-- PWA Install Banner -->
+<div id="installBanner">
+  <p>📱 इस App को Phone पर Install करें — बिना Play Store के!</p>
+  <div class="ib-btns">
+    <button class="ib-install" id="installBtn">Install</button>
+    <button class="ib-close" onclick="document.getElementById('installBanner').style.display='none'">✕</button>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-main">
+    <div class="logo">
+      <div class="logo-mark">🕉</div>
+      <div class="logo-text">मीना समाज <em>वैवाहिक</em></div>
+    </div>
+    <div class="topbar-right">
+      <div class="count-tag" id="countTag">लोड हो रहा है…</div>
+    </div>
+  </div>
+</div>
+
+<!-- AD SLOT (top banner) -->
+<div class="ad-slot">
+  <!-- AdSense लगने के बाद यह div replace करें:
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX" data-ad-format="banner"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <div class="ad-placeholder">विज्ञापन स्थान — AdSense Approved होने के बाद यहाँ Ad आएगा</div>
+</div>
+
+<!-- SEARCH + FILTER -->
+<div class="search-bar">
+  <div class="search-wrap">
+    <span class="si">🔍</span>
+    <input id="q" type="text" placeholder="नाम, गोत्र, शिक्षा, जिला खोजें…" oninput="applyFilters()">
+  </div>
+  <button class="filter-btn" id="filterBtn" onclick="openPanel()">
+    <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+    <span class="f-dot"></span>
+  </button>
+</div>
+
+<div class="chips-row" id="chipsRow"></div>
+
+<!-- CARDS -->
+<div class="cards-wrap" id="cards">
+  <div class="empty">
+    <div class="ei">🔗</div>
+    <h3>Sheet Connect करें</h3>
+    <p>ऊपर 🔗 बटन दबाएँ और अपनी Google Sheet link paste करें।</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     BOTTOM NAVIGATION
+═══════════════════════════════════ -->
+<nav class="bottom-nav">
+  <button class="nav-item active" id="nav-home" onclick="showPage('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>होम</span>
+    <div class="nav-dot"></div>
+  </button>
+  <button class="nav-item" id="nav-about" onclick="showPage('about')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span>हमारे बारे में</span>
+    <div class="nav-dot"></div>
+  </button>
+  <button class="nav-item" id="nav-privacy" onclick="showPage('privacy')">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <span>Privacy</span>
+    <div class="nav-dot"></div>
+  </button>
+  <button class="nav-item" id="nav-contact" onclick="showPage('contact')">
+    <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.54 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6.29 6.29l1.06-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    <span>संपर्क</span>
+    <div class="nav-dot"></div>
+  </button>
+  <button class="nav-item" id="nav-submit" onclick="showPage('submit')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    <span>जोड़ें</span>
+    <div class="nav-dot"></div>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════
+     PROFILE SUBMISSION PAGE
+═══════════════════════════════════ -->
+<div class="page-overlay" id="page-submit">
+  <div class="page-topbar">
+    <button class="back-btn" onclick="showPage('home')">←</button>
+    <div class="page-title">Profile जोड़ें</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="sub-tabs">
+    <button class="sub-tab on" id="tab-form" onclick="switchTab('form')">📝 Form भरें</button>
+    <button class="sub-tab" id="tab-ai" onclick="switchTab('ai')">🤖 AI से Auto-Fill</button>
+  </div>
+
+  <!-- Success screen (shared) -->
+  <div class="success-box" id="successBox">
+    <div class="s-icon">🎉</div>
+    <h3>Profile Add हो गई!</h3>
+    <p>आपकी profile सफलतापूर्वक मीना समाज वैवाहिक पोर्टल में add हो गई है।</p>
+    <button class="btn-add-another" onclick="resetSubmit()">+ एक और Profile जोड़ें</button>
+  </div>
+
+  <!-- ── TAB 1: FORM ── -->
+  <div class="tab-panel on" id="panel-form">
+
+    <!-- Personal Info -->
+    <div class="form-section">
+      <div class="form-section-title">👤 व्यक्तिगत जानकारी</div>
+      <div class="form-row"><label>पूरा नाम <em>*</em></label><input class="f-input" id="f-name" type="text" placeholder="जैसे: राम लाल मीना"></div>
+      <div class="form-row-2">
+        <div class="form-row">
+          <label>लिंग <em>*</em></label>
+          <select class="f-select" id="f-gender">
+            <option value="">चुनें</option>
+            <option value="Male">लड़का (Male)</option>
+            <option value="Female">लड़की (Female)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>जन्म तिथि</label>
+          <input class="f-input" id="f-dob" type="text" placeholder="DD-MM-YYYY">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-row">
+          <label>ऊँचाई</label>
+          <select class="f-select" id="f-height">
+            <option value="">चुनें</option>
+            <option>4'8"</option><option>4'10"</option>
+            <option>5'0"</option><option>5'1"</option><option>5'2"</option>
+            <option>5'3"</option><option>5'4"</option><option>5'5"</option>
+            <option>5'6"</option><option>5'7"</option><option>5'8"</option>
+            <option>5'9"</option><option>5'10"</option><option>5'11"</option>
+            <option>6'0"</option><option>6'1"</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>रंग / Complexion</label>
+          <select class="f-select" id="f-complexion">
+            <option value="">चुनें</option>
+            <option value="गोरा (Fair)">गोरा (Fair)</option>
+            <option value="गेहुँआ (Wheatish)">गेहुँआ (Wheatish)</option>
+            <option value="साँवला (Dusky)">साँवला (Dusky)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education & Job -->
+    <div class="form-section">
+      <div class="form-section-title">🎓 शिक्षा और नौकरी</div>
+      <div class="form-row"><label>शैक्षिक योग्यता</label><input class="f-input" id="f-edu" type="text" placeholder="जैसे: B.A., M.A., B.Tech"></div>
+      <div class="form-row"><label>नौकरी / व्यवसाय</label><input class="f-input" id="f-job" type="text" placeholder="जैसे: Government Teacher, Farmer"></div>
+    </div>
+
+    <!-- Gotra -->
+    <div class="form-section">
+      <div class="form-section-title">🔱 गोत्र जानकारी</div>
+      <div class="form-row-2">
+        <div class="form-row"><label>स्वयं का गोत्र <em>*</em></label><input class="f-input" id="f-sg" type="text" placeholder="Self Gotra"></div>
+        <div class="form-row"><label>माँ का गोत्र <em>*</em></label><input class="f-input" id="f-mg" type="text" placeholder="Mother Gotra"></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-row"><label>दादी का गोत्र</label><input class="f-input" id="f-dg" type="text" placeholder="Dadi Gotra"></div>
+        <div class="form-row"><label>नानी का गोत्र</label><input class="f-input" id="f-ng" type="text" placeholder="Nani Gotra"></div>
+      </div>
+    </div>
+
+    <!-- Family -->
+    <div class="form-section">
+      <div class="form-section-title">👨‍👩‍👧 परिवार</div>
+      <div class="form-row"><label>पिता का नाम</label><input class="f-input" id="f-fn" type="text" placeholder="पिता का पूरा नाम"></div>
+      <div class="form-row-2">
+        <div class="form-row"><label>पिता का व्यवसाय</label><input class="f-input" id="f-fo" type="text" placeholder="Farmer, Govt Job…"></div>
+        <div class="form-row">
+          <label>जमींदार / चौकीदार</label>
+          <select class="f-select" id="f-jc">
+            <option value="">चुनें</option>
+            <option value="Jamindar">जमींदार</option>
+            <option value="Chaukidar">चौकीदार</option>
+            <option value="दोनों नहीं">दोनों नहीं</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="form-section">
+      <div class="form-section-title">📍 वर्तमान पता</div>
+      <div class="form-row"><label>पता (मोहल्ला / कॉलोनी / गाँव)</label><input class="f-input" id="f-pa" type="text" placeholder="मोहल्ला / कॉलोनी का नाम"></div>
+      <div class="form-row-2">
+        <div class="form-row"><label>जिला <em>*</em></label><select class="f-select" id="f-pd"><option value="">जिला चुनें</option></select></div>
+        <div class="form-row"><label>राज्य</label><select class="f-select" id="f-ps"><option value="Rajasthan">Rajasthan</option></select></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">🏡 मूल पता</div>
+      <div class="form-row"><label>मूल गाँव / पता</label><input class="f-input" id="f-na" type="text" placeholder="मूल गाँव का नाम"></div>
+      <div class="form-row-2">
+        <div class="form-row"><label>जिला</label><select class="f-select" id="f-nd"><option value="">जिला चुनें</option></select></div>
+        <div class="form-row"><label>राज्य</label><select class="f-select" id="f-ns"><option value="Rajasthan">Rajasthan</option></select></div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="form-section">
+      <div class="form-section-title">📱 संपर्क</div>
+      <div class="form-row-2">
+        <div class="form-row"><label>Mobile नंबर <em>*</em></label><input class="f-input" id="f-mob" type="tel" placeholder="9876543210"></div>
+        <div class="form-row"><label>WhatsApp नंबर</label><input class="f-input" id="f-wa" type="tel" placeholder="9876543210"></div>
+      </div>
+      <div class="form-row"><label>अन्य जानकारी</label><textarea class="f-textarea" id="f-other" placeholder="कोई और जरूरी बात लिखें…"></textarea></div>
+    </div>
+
+    <button class="btn-submit" id="formSubmitBtn" onclick="submitForm()">✓ Profile Submit करें</button>
+    <div class="parse-status" id="formStatus"></div>
+  </div>
+
+  <!-- ── TAB 2: AI PARSER ── -->
+  <div class="tab-panel" id="panel-ai">
+
+    <div class="ai-box">
+      <h3>🤖 AI से Auto-Fill करें</h3>
+      <p>नीचे WhatsApp जैसा message paste करें — AI खुद सभी details निकाल लेगा।</p>
+      <div class="ai-example">
+        मेरा नाम राम लाल मीना है, उम्र 26 साल है।<br>
+        बूंदी जिले का हूँ, गाँव रामपुरा में रहता हूँ।<br>
+        BA किया है, सरकारी teacher हूँ।<br>
+        गोत्र मीना है, माँ का गोत्र गुर्जर है।<br>
+        पिता का नाम श्याम लाल है, किसान हैं।<br>
+        जमींदार हूँ। मोबाइल 9876543210
+      </div>
+    </div>
+
+    <!-- Paste area -->
+    <div class="ai-parse-area">
+      <textarea id="aiText" placeholder="यहाँ WhatsApp message paste करें…&#10;&#10;जितना लिखा है उतना ही काफी है — AI बाकी समझ लेगा।"></textarea>
+    </div>
+
+    <button class="btn-parse" id="parseBtn" onclick="parseWithAI()">
+      🤖 AI से Fields निकालें
+    </button>
+
+    <div class="parse-status" id="parseStatus"></div>
+
+    <!-- Preview -->
+    <div class="preview-card" id="previewCard">
+      <div class="preview-title">✅ AI ने यह जानकारी निकाली — Check करें</div>
+      <div class="preview-grid" id="previewGrid"></div>
+      <div style="margin-top:12px;padding:10px;background:var(--bg);border-radius:var(--r-s);font-size:12px;color:var(--t2);">
+        ⚠️ गलत हो तो नीचे edit करें, फिर submit करें।
+      </div>
+    </div>
+
+    <!-- Editable fields after parse -->
+    <div id="aiFormFields" style="display:none;">
+      <div class="form-section">
+        <div class="form-section-title">✏️ Check करें और जरूरत हो तो Edit करें</div>
+        <div class="form-row-2">
+          <div class="form-row"><label>नाम</label><input class="f-input" id="a-name" type="text"></div>
+          <div class="form-row"><label>लिंग</label><select class="f-select" id="a-gender"><option value="">चुनें</option><option value="Male">लड़का</option><option value="Female">लड़की</option></select></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-row"><label>जन्म तिथि</label><input class="f-input" id="a-dob" type="text" placeholder="DD-MM-YYYY"></div>
+          <div class="form-row"><label>ऊँचाई</label><input class="f-input" id="a-height" type="text" placeholder="5'8&quot;"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-row"><label>शिक्षा</label><input class="f-input" id="a-edu" type="text"></div>
+          <div class="form-row"><label>नौकरी</label><input class="f-input" id="a-job" type="text"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-row"><label>Self Gotra</label><input class="f-input" id="a-sg" type="text"></div>
+          <div class="form-row"><label>Mother Gotra</label><input class="f-input" id="a-mg" type="text"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-row"><label>Dadi Gotra</label><input class="f-input" id="a-dg" type="text"></div>
+          <div class="form-row"><label>Nani Gotra</label><input class="f-input" id="a-ng" type="text"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-row"><label>पिता का नाम</label><input class="f-input" id="a-fn" type="text"></div>
+          <div class="form-row"><label>पिता का व्यवसाय</label><input class="f-input" id="a-fo" type="text"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-row"><label>जमींदार/चौकीदार</label><select class="f-select" id="a-jc"><option value="">चुनें</option><option value="Jamindar">जमींदार</option><option value="Chaukidar">चौकीदार</option><option value="दोनों नहीं">दोनों नहीं</option></select></div>
+          <div class="form-row"><label>Mobile</label><input class="f-input" id="a-mob" type="tel"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-row"><label>वर्तमान जिला</label><select class="f-select" id="a-pd"><option value="">चुनें</option></select></div>
+          <div class="form-row"><label>मूल जिला</label><select class="f-select" id="a-nd"><option value="">चुनें</option></select></div>
+        </div>
+        <div class="form-row"><label>वर्तमान पता</label><input class="f-input" id="a-pa" type="text"></div>
+        <div class="form-row"><label>मूल पता</label><input class="f-input" id="a-na" type="text"></div>
+      </div>
+      <button class="btn-submit" id="aiSubmitBtn" onclick="submitAIForm()">✓ Profile Submit करें</button>
+      <div class="parse-status" id="aiSubmitStatus"></div>
+    </div>
+
+  </div><!-- /tab-panel ai -->
+</div><!-- /page-submit -->
+
+<!-- ═══════════════════════════════════
+     ABOUT US PAGE
+═══════════════════════════════════ -->
+<div class="page-overlay" id="page-about">
+  <div class="page-topbar">
+    <button class="back-btn" onclick="showPage('home')">←</button>
+    <div class="page-title">हमारे बारे में</div>
+  </div>
+  <div class="page-body">
+    <div class="about-hero">
+      <div class="ah-icon">🕉️</div>
+      <h1>मीना समाज वैवाहिक पोर्टल</h1>
+      <p>मीना समाज के लिए विशेष रूप से बनाया गया वैवाहिक मंच — जहाँ गोत्र, जिला और परिवार के अनुसार जीवनसाथी खोजें।</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num" id="statCount">0</div><div class="stat-lbl">Profiles</div></div>
+      <div class="stat-box"><div class="stat-num">50+</div><div class="stat-lbl">जिले</div></div>
+      <div class="stat-box"><div class="stat-num">Free</div><div class="stat-lbl">सेवा</div></div>
+    </div>
+
+    <div class="section-card">
+      <h2>🎯 हमारा उद्देश्य</h2>
+      <p>मीना समाज वैवाहिक पोर्टल का उद्देश्य मीना समाज के युवाओं को एक सुरक्षित और आसान मंच प्रदान करना है जहाँ वे अपना उचित जीवनसाथी ढूँढ सकें।</p>
+      <p>यह पोर्टल पूर्णतः निःशुल्क है और समाज की सेवा के लिए समर्पित है।</p>
+    </div>
+
+    <div class="section-card">
+      <h2>✨ विशेषताएँ</h2>
+      <ul>
+        <li>गोत्र के अनुसार filter — 2, 3 या 4 गोत्र वर्जन का विकल्प</li>
+        <li>राजस्थान के सभी 50 जिलों के अनुसार खोज</li>
+        <li>जमींदार / चौकीदार वर्ग के अनुसार filter</li>
+        <li>सीधे WhatsApp पर संपर्क करने की सुविधा</li>
+        <li>Mobile पर App की तरह Install करें — बिल्कुल मुफ़्त</li>
+      </ul>
+    </div>
+
+    <div class="section-card">
+      <h2>⚠️ अस्वीकरण</h2>
+      <p>यह पोर्टल केवल सूचना प्रदान करने के उद्देश्य से बनाया गया है। profile में दी गई जानकारी की पुष्टि की जिम्मेदारी संबंधित परिवार की है। किसी भी विवाद के लिए पोर्टल प्रबंधन जिम्मेदार नहीं होगा।</p>
+    </div>
+
+    <button class="share-btn" onclick="shareApp()">📤 इस App को Share करें</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     PRIVACY POLICY PAGE
+═══════════════════════════════════ -->
+<div class="page-overlay" id="page-privacy">
+  <div class="page-topbar">
+    <button class="back-btn" onclick="showPage('home')">←</button>
+    <div class="page-title">Privacy Policy</div>
+  </div>
+  <div class="page-body">
+
+    <div class="section-card">
+      <h2>📋 Privacy Policy</h2>
+      <p><strong>Last Updated: अप्रैल 2026</strong></p>
+      <p>मीना समाज वैवाहिक पोर्टल ("हम", "हमारा") आपकी privacy को गंभीरता से लेता है। यह Privacy Policy बताती है कि हम आपकी जानकारी कैसे एकत्रित, उपयोग और सुरक्षित करते हैं।</p>
+    </div>
+
+    <div class="section-card">
+      <h2>📂 हम कौन सी जानकारी एकत्रित करते हैं?</h2>
+      <p>जब आप profile submit करते हैं, तो हम निम्नलिखित जानकारी एकत्रित करते हैं:</p>
+      <ul>
+        <li>नाम, जन्म तिथि, लिंग</li>
+        <li>शैक्षिक योग्यता और व्यवसाय</li>
+        <li>गोत्र जानकारी (पारिवारिक)</li>
+        <li>पता (जिला, राज्य)</li>
+        <li>मोबाइल / WhatsApp नंबर</li>
+        <li>परिवार की जानकारी</li>
+      </ul>
+    </div>
+
+    <div class="section-card">
+      <h2>🔐 हम जानकारी का उपयोग कैसे करते हैं?</h2>
+      <ul>
+        <li>वैवाहिक profile प्रदर्शित करने के लिए</li>
+        <li>उपयुक्त जीवनसाथी खोजने में सहायता के लिए</li>
+        <li>App की सेवाएँ बेहतर बनाने के लिए</li>
+      </ul>
+      <p>हम आपकी जानकारी किसी तीसरे पक्ष को <strong>नहीं बेचते</strong> और न ही किसी commercial उद्देश्य के लिए share करते हैं।</p>
+    </div>
+
+    <div class="section-card">
+      <h2>🍪 Cookies और Analytics</h2>
+      <p>यह App Google AdSense का उपयोग कर सकता है जो cookies के माध्यम से प्रासंगिक विज्ञापन दिखाता है। AdSense के बारे में अधिक जानकारी के लिए Google की Privacy Policy देखें।</p>
+      <p>हम App के उपयोग को समझने के लिए basic analytics collect कर सकते हैं।</p>
+    </div>
+
+    <div class="section-card">
+      <h2>🗑️ जानकारी हटाना</h2>
+      <p>यदि आप अपनी profile हटाना चाहते हैं, तो हमसे संपर्क करें। हम 7 कार्य दिवसों के भीतर आपकी जानकारी हटा देंगे।</p>
+      <p>संपर्क: <strong>Contact Us</strong> section में दिए गए नंबर पर WhatsApp करें।</p>
+    </div>
+
+    <div class="section-card">
+      <h2>👶 बच्चों की Privacy</h2>
+      <p>यह App केवल 18 वर्ष और उससे अधिक आयु के व्यक्तियों के लिए है। हम जानबूझकर 18 वर्ष से कम आयु के व्यक्तियों की जानकारी एकत्रित नहीं करते।</p>
+    </div>
+
+    <div class="section-card">
+      <h2>📞 Privacy संबंधी प्रश्न</h2>
+      <p>Privacy Policy से संबंधित किसी भी प्रश्न के लिए हमसे संपर्क करें।</p>
+      <p>यह Policy समय-समय पर अपडेट हो सकती है। महत्वपूर्ण बदलावों की सूचना दी जाएगी।</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     CONTACT US PAGE
+═══════════════════════════════════ -->
+<div class="page-overlay" id="page-contact">
+  <div class="page-topbar">
+    <button class="back-btn" onclick="showPage('home')">←</button>
+    <div class="page-title">संपर्क करें</div>
+  </div>
+  <div class="page-body">
+
+    <div class="section-card">
+      <h2>📞 हमसे संपर्क करें</h2>
+      <p>Profile Add करने, हटाने, या किसी भी सहायता के लिए नीचे दिए गए माध्यमों से संपर्क करें।</p>
+
+      <div class="contact-row">
+        <div class="cr-icon">📱</div>
+        <div class="cr-info">
+          <div class="cr-label">WhatsApp / Mobile</div>
+          <!-- ⚠️ अपना नंबर यहाँ डालें -->
+          <div class="cr-value"><a href="https://wa.me/91XXXXXXXXXX">+91 XXXX-XXXXXX</a></div>
+        </div>
+      </div>
+
+      <div class="contact-row">
+        <div class="cr-icon">📧</div>
+        <div class="cr-info">
+          <div class="cr-label">Email</div>
+          <!-- ⚠️ अपना email यहाँ डालें -->
+          <div class="cr-value"><a href="mailto:yourmail@gmail.com">yourmail@gmail.com</a></div>
+        </div>
+      </div>
+
+      <div class="contact-row">
+        <div class="cr-icon">📍</div>
+        <div class="cr-info">
+          <div class="cr-label">पता</div>
+          <!-- ⚠️ अपना पता यहाँ डालें -->
+          <div class="cr-value">बूंदी, राजस्थान</div>
+        </div>
+      </div>
+
+      <div class="contact-row">
+        <div class="cr-icon">⏰</div>
+        <div class="cr-info">
+          <div class="cr-label">समय</div>
+          <div class="cr-value">सुबह 9 बजे – शाम 6 बजे</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2>➕ Profile Add कैसे करें?</h2>
+      <ul>
+        <li>WhatsApp पर अपनी जानकारी भेजें</li>
+        <li>हम 24 घंटे में profile add कर देंगे</li>
+        <li>Profile Add करना पूर्णतः निःशुल्क है</li>
+      </ul>
+      <!-- ⚠️ अपना नंबर यहाँ डालें -->
+      <button class="share-btn" style="margin-top:12px" onclick="window.open('https://wa.me/91XXXXXXXXXX?text='+encodeURIComponent('नमस्ते! मैं अपनी profile add करना चाहता/चाहती हूँ।'),'_blank')">
+        💬 WhatsApp पर Profile भेजें
+      </button>
+    </div>
+
+    <div class="section-card">
+      <h2>📤 App Share करें</h2>
+      <p>इस App को अपने परिवार और मित्रों के साथ share करें।</p>
+      <button class="share-btn" onclick="shareApp()">📤 Share करें</button>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER OVERLAY + PANEL -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="panel" id="panel">
+  <div class="panel-handle"></div>
+  <div class="panel-head">
+    <span class="panel-title">Filters</span>
+    <button class="btn-reset" onclick="resetAll()">सब हटाएँ</button>
+  </div>
+  <div class="panel-body">
+    <div class="fg"><div class="fg-label">लिंग / Gender</div>
+      <div class="pill-row">
+        <button class="pill on" data-g="gender" data-v="">सभी</button>
+        <button class="pill" data-g="gender" data-v="Male">लड़का</button>
+        <button class="pill" data-g="gender" data-v="Female">लड़की</button>
+      </div>
+    </div>
+    <div class="fg"><div class="fg-label">आयु / Age</div>
+      <div class="range-row">
+        <input type="number" id="ageMin" placeholder="18" min="18" max="70">
+        <span class="range-sep">से</span>
+        <input type="number" id="ageMax" placeholder="50" min="18" max="70">
+      </div>
+    </div>
+    <div class="fg"><div class="fg-label">जमींदार / चौकीदार</div>
+      <div class="pill-row">
+        <button class="pill on" data-g="jc" data-v="">सभी</button>
+        <button class="pill" data-g="jc" data-v="Jamindar">जमींदार</button>
+        <button class="pill" data-g="jc" data-v="Chaukidar">चौकीदार</button>
+      </div>
+    </div>
+    <div class="fg"><div class="fg-label">शिक्षा</div>
+      <input class="fg-input" id="eduF" type="text" placeholder="B.A., M.A., B.Tech…" oninput="applyFilters()">
+    </div>
+    <div class="fg"><div class="fg-label">वर्तमान जिला</div>
+      <select id="pDist" onchange="applyFilters()"><option value="">सभी जिले</option></select>
+    </div>
+    <div class="fg"><div class="fg-label">मूल जिला</div>
+      <select id="nDist" onchange="applyFilters()"><option value="">सभी जिले</option></select>
+    </div>
+    <div class="fg"><div class="fg-label">राज्य</div>
+      <select id="stateF" onchange="applyFilters()"><option value="">सभी राज्य</option></select>
+    </div>
+    <div class="fg"><div class="fg-label">गोत्र फ़िल्टर</div>
+      <div class="pill-row">
+        <button class="pill on" data-g="zone" data-v="0">बंद</button>
+        <button class="pill" data-g="zone" data-v="2">2 गोत्र</button>
+        <button class="pill" data-g="zone" data-v="3">3 गोत्र</button>
+        <button class="pill" data-g="zone" data-v="4">4 गोत्र</button>
+      </div>
+      <div class="gotra-inputs" id="gotraInputs" style="display:none">
+        <input class="fg-input" id="g1" type="text" placeholder="आपका गोत्र (Self)" oninput="applyFilters()">
+        <input class="fg-input" id="g2" type="text" placeholder="माँ का गोत्र (Mother)" oninput="applyFilters()">
+        <input class="fg-input" id="g3" type="text" placeholder="दादी का गोत्र (Dadi)" oninput="applyFilters()" style="display:none">
+        <input class="fg-input" id="g4" type="text" placeholder="नानी का गोत्र (Nani)" oninput="applyFilters()" style="display:none">
+      </div>
+      <div class="zone-note" id="zoneNote" style="display:none"></div>
+    </div>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-apply" onclick="closePanel()">Filter लगाएँ</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// ⚙️ CONFIG — सिर्फ यहाँ बदलें (user को नहीं दिखता)
+// ══════════════════════════════════════════════════
+const CONFIG = {
+  // ⚠️ अपनी Apps Script URL यहाँ डालें (deploy के बाद मिलती है)
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbw2GMZPuBnE_vy-t55ZsxI8OlPIJ6GdCGFCOB4CpyaBA18ce3mkKqd--cremEdwiF_m/exec",
+};
+// ══════════════════════════════════════════════════
+let ALL=[], FILTERED=[], zone=0;
+const DISTS=["Ajmer","Alwar","Anupgarh","Balotra","Banswara","Baran","Barmer","Beawar","Bharatpur","Bhilwara","Bikaner","Bundi","Chittorgarh","Churu","Dausa","Deeg","Didwana-Kuchaman","Dholpur","Dudu","Dungarpur","Gangapur City","Ganganagar","Hanumangarh","Jaipur","Jaipur Rural","Jaisalmer","Jalore","Jhalawar","Jhunjhunu","Jodhpur","Jodhpur Rural","Karauli","Kekri","Khairtal-Tijara","Kota","Kotputli-Behror","Nagaur","Neem Ka Thana","Pali","Phalodi","Pratapgarh","Rajsamand","Salumbar","Sanchore","Sawai Madhopur","Shahpura","Sikar","Sirohi","Tonk","Udaipur"];
+
+// ── INIT ─────────────────────────────────────────────
+(function(){
+  // Filter dropdowns
+  ["pDist","nDist"].forEach(id=>{
+    const el=document.getElementById(id);
+    DISTS.forEach(d=>{const o=document.createElement("option");o.value=d;o.textContent=d;el.appendChild(o);});
+  });
+  // Form dropdowns
+  ["f-pd","f-nd","a-pd","a-nd"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    DISTS.forEach(d=>{const o=document.createElement("option");o.value=d;o.textContent=d;el.appendChild(o);});
+  });
+  // Other states for form
+  const STATES=["Rajasthan","Uttar Pradesh","Madhya Pradesh","Gujarat","Maharashtra","Haryana","Punjab","Delhi","Bihar","Other State"];
+  ["f-ps","f-ns"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.innerHTML="";
+    STATES.forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;el.appendChild(o);});
+  });
+  // Register service worker
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  }
+  // Auto load data on startup
+  autoLoad();
+})();
+
+// ── AUTO LOAD on startup ──────────────────────────────
+async function autoLoad(){
+  if(!CONFIG.SCRIPT_URL || CONFIG.SCRIPT_URL.includes('यहाँ_अपनी_URL')){
+    showErr("CONFIG में Apps Script URL set करें।"); return;
+  }
+  showLoader();
+  try{
+    const r=await fetch(CONFIG.SCRIPT_URL,{redirect:'follow'});
+    const j=await r.json();
+    if(j.error) throw new Error(j.error);
+    ALL=j.profiles||[];
+    document.getElementById('countTag').textContent=ALL.length+' profiles';
+    document.getElementById('statCount') && (document.getElementById('statCount').textContent=ALL.length);
+    refreshStates();
+    applyFilters();
+  }catch(e){
+    showErr('Data load नहीं हुआ: '+e.message);
+    document.getElementById('countTag').textContent='Error';
+  }
+}
+
+// ── PWA INSTALL ──────────────────────────────────────
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault(); deferredPrompt=e;
+  document.getElementById('installBanner').style.display='flex';
+});
+document.getElementById('installBtn').addEventListener('click',async()=>{
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  const {outcome}=await deferredPrompt.userChoice;
+  deferredPrompt=null;
+  document.getElementById('installBanner').style.display='none';
+});
+window.addEventListener('appinstalled',()=>{
+  document.getElementById('installBanner').style.display='none';
+});
+
+// ── NAVIGATION ────────────────────────────────────────
+let currentPage = 'home';
+function showPage(page){
+  currentPage=page;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.id==='nav-'+page));
+  ['about','privacy','contact','submit'].forEach(p=>{
+    const el=document.getElementById('page-'+p);
+    if(el)el.classList.toggle('open',p===page);
+  });
+  if(page==='home')window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── SHARE ─────────────────────────────────────────────
+function shareApp(){
+  const data={title:'मीना समाज वैवाहिक',text:'मीना समाज वैवाहिक पोर्टल — जीवनसाथी खोजें',url:location.href};
+  if(navigator.share){navigator.share(data);}
+  else{navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!'));}
+}
+
+// ── LOAD DATA (manual - kept for internal use) ───────
+function toggleUrl(){} // removed from UI
+function buildCsv(raw){
+  const m=raw.match(/\/d\/([a-zA-Z0-9_-]{20,})/);
+  if(!m)return raw;
+  if(raw.includes("pub?")&&raw.includes("output=csv"))return raw;
+  const g=(raw.match(/[?&#]gid=(\d+)/)||[])[1]||"0";
+  return`https://docs.google.com/spreadsheets/d/${m[1]}/pub?gid=${g}&single=true&output=csv`;
+}
+async function tryFetch(url){
+  for(const u of[url,`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,`https://corsproxy.io/?${encodeURIComponent(url)}`]){
+    try{const r=await fetch(u);const t=await r.text();if(r.ok&&t.length>20&&!t.trim().startsWith("<!"))return t;}catch(e){}
+  }
+  throw new Error("Load failed");
+}
+function parseCSV(text){
+  const rows=[];let inQ=false,cur="",row=[];
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(c==='"')inQ=!inQ;
+    else if(c===','&&!inQ){row.push(cur.trim());cur="";}
+    else if((c==='\n'||c==='\r')&&!inQ){
+      if(cur||row.length){row.push(cur.trim());rows.push(row);}
+      cur="";row=[];if(c==='\r'&&text[i+1]==='\n')i++;
+    }else cur+=c;
+  }
+  if(row.length){row.push(cur.trim());rows.push(row);}
+  ALL=[];
+  rows.slice(2).forEach((r,i)=>{
+    if(!r[2])return;
+    if((r[28]||"").toLowerCase()==="inactive")return;
+    ALL.push({id:i,name:r[2]||"",gender:r[3]||"",age:parseInt(r[5])||0,height:r[6]||"",complexion:r[7]||"",education:r[8]||"",job:r[9]||"",selfGotra:r[10]||"",motherGotra:r[11]||"",dadiGotra:r[12]||"",naniGotra:r[13]||"",fatherName:r[14]||"",fatherOccup:r[15]||"",jc:r[16]||"",presentAddr:r[17]||"",pDistrict:r[18]||"",pState:r[19]||"",nativeAddr:r[20]||"",nDistrict:r[21]||"",nState:r[22]||"",mobile:r[23]||"",whatsapp:r[24]||"",photo:r[25]||"",other:r[26]||""});
+  });
+}
+function refreshStates(){
+  const states=[...new Set(ALL.flatMap(p=>[p.pState,p.nState]).filter(Boolean))].sort();
+  const el=document.getElementById("stateF");const cur=el.value;
+  el.innerHTML='<option value="">सभी राज्य</option>';
+  states.forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;el.appendChild(o);});
+  el.value=cur;
+}
+
+// ── FILTERS ──────────────────────────────────────────
+function g(id){return(document.getElementById(id)||{}).value||"";}
+function pill(grp){const a=document.querySelector(`.pill.on[data-g="${grp}"]`);return a?a.dataset.v:"";}
+function avoidList(){
+  if(!zone)return[];
+  const gs=[(g("g1")||"").toLowerCase(),(g("g2")||"").toLowerCase()];
+  if(zone>=3)gs.push((g("g3")||"").toLowerCase());
+  if(zone>=4)gs.push((g("g4")||"").toLowerCase());
+  return gs.filter(Boolean);
+}
+function conflicts(p,avoid){
+  if(!avoid.length)return false;
+  return[p.selfGotra,p.motherGotra,p.dadiGotra,p.naniGotra].map(x=>x.toLowerCase()).some(x=>avoid.includes(x));
+}
+function applyFilters(){
+  const q=(g("q")||"").toLowerCase();
+  const gender=pill("gender"),jc=pill("jc");
+  const amin=parseInt(g("ageMin"))||0,amax=parseInt(g("ageMax"))||999;
+  const edu=g("eduF").toLowerCase(),pd=g("pDist"),nd=g("nDist"),st=g("stateF");
+  const avoid=avoidList();
+  FILTERED=ALL.filter(p=>{
+    if(gender&&p.gender!==gender)return false;
+    if(jc&&!p.jc.toLowerCase().includes(jc.toLowerCase()))return false;
+    if(p.age&&(p.age<amin||p.age>amax))return false;
+    if(edu&&!p.education.toLowerCase().includes(edu))return false;
+    if(pd&&p.pDistrict!==pd)return false;
+    if(nd&&p.nDistrict!==nd)return false;
+    if(st&&p.pState!==st&&p.nState!==st)return false;
+    if(conflicts(p,avoid))return false;
+    if(q){const blob=[p.name,p.selfGotra,p.motherGotra,p.education,p.job,p.pDistrict,p.nDistrict].join(" ").toLowerCase();if(!blob.includes(q))return false;}
+    return true;
+  });
+  render();
+  renderChips({gender,jc,amin,amax,edu,pd,nd,st,avoid});
+  document.getElementById("filterBtn").classList.toggle("on",!!(gender||jc||zone>0||pd||nd||st||edu));
+}
+
+// ── RENDER ────────────────────────────────────────────
+function render(){
+  const wrap=document.getElementById("cards");
+  if(!FILTERED.length){wrap.innerHTML=`<div class="empty"><div class="ei">🔍</div><h3>कोई profile नहीं मिली</h3><p>Filter बदलें</p></div>`;return;}
+  wrap.innerHTML=FILTERED.map(buildCard).join("");
+}
+function buildCard(p,i){
+  const avoid=avoidList();
+  const em=p.gender==="Female"?"👩":"👨";
+  const av=p.photo?`<img src="${p.photo}" onerror="this.parentElement.innerHTML='${em}'">`:`<span>${em}</span>`;
+  function gt(val,lbl){if(!val)return"";const bad=avoid.includes(val.toLowerCase())?" bad":"";return`<span class="g-tag${bad}"><small>${lbl}</small>${val}</span>`;}
+  const gotras=[gt(p.selfGotra,"स्व"),gt(p.motherGotra,"माँ"),gt(p.dadiGotra,"दादी"),gt(p.naniGotra,"नानी")].filter(Boolean).join("");
+  const jcTag=p.jc&&p.jc!=="दोनों नहीं"?`<span class="tag hi">${p.jc}</span>`:"";
+  const addr1=[p.presentAddr,p.pDistrict,p.pState].filter(Boolean).join(", ");
+  const addr2=[p.nativeAddr,p.nDistrict,p.nState].filter(Boolean).join(", ");
+  const wa=(p.whatsapp||p.mobile||"").replace(/\D/g,"");
+  const foot=wa?`<div class="c-foot"><button class="c-btn btn-wa" onclick="openWA('${wa}')">💬 WhatsApp</button><button class="c-btn btn-ph" onclick="location.href='tel:${p.mobile}'">📞 Call</button></div>`:"";
+  return`<div class="card" style="animation-delay:${i*.03}s">
+  <div class="c-head"><div class="c-av">${av}</div>
+  <div class="c-meta">
+    <div class="c-name">${p.name}</div>
+    <div class="c-sub">${[p.age?p.age+" वर्ष":"",p.height,p.complexion].filter(Boolean).join(" · ")||"—"}</div>
+    <div class="c-tags"><span class="tag">${p.gender==="Female"?"लड़की":"लड़का"}</span>${jcTag}</div>
+  </div></div>
+  <div class="c-div"></div>
+  <div class="c-body">
+    <div class="c-grid">
+      <div><div class="cf-l">शिक्षा</div><div class="cf-v">${p.education||"—"}</div></div>
+      <div><div class="cf-l">नौकरी</div><div class="cf-v">${p.job||"—"}</div></div>
+      <div><div class="cf-l">पिता</div><div class="cf-v">${p.fatherName||"—"}</div></div>
+      <div><div class="cf-l">पिता का काम</div><div class="cf-v">${p.fatherOccup||"—"}</div></div>
+    </div>
+    ${gotras?`<div class="c-gotra"><div class="g-head">गोत्र</div><div class="g-tags">${gotras}</div></div>`:""}
+  </div>
+  ${addr1?`<div class="c-addr">📍 <span>${addr1}</span></div>`:""}
+  ${addr2?`<div class="c-addr">🏡 <span>${addr2}</span></div>`:""}
+  ${p.other?`<div class="c-addr-note">— ${p.other}</div>`:""}
+  ${foot}
+</div>`;
+}
+
+// ── CHIPS ─────────────────────────────────────────────
+function renderChips(f){
+  const items=[];
+  if(f.gender)items.push(f.gender==="Male"?"लड़का":"लड़की");
+  if(f.jc)items.push(f.jc);
+  if(f.amin>0)items.push("उम्र ≥ "+f.amin);
+  if(f.amax<999)items.push("उम्र ≤ "+f.amax);
+  if(f.edu)items.push(f.edu);
+  if(f.pd)items.push(f.pd);
+  if(f.nd)items.push(f.nd+" (मूल)");
+  if(f.st)items.push(f.st);
+  if(f.avoid?.length)items.push("गोत्र Zone "+zone);
+  document.getElementById("chipsRow").innerHTML=items.map(t=>`<div class="chip" onclick="openPanel()">${t} ×</div>`).join("");
+}
+
+// ── PILLS ─────────────────────────────────────────────
+document.querySelectorAll(".pill").forEach(p=>{
+  p.addEventListener("click",function(){
+    const grp=this.dataset.g;
+    document.querySelectorAll(`.pill[data-g="${grp}"]`).forEach(x=>x.classList.remove("on"));
+    this.classList.add("on");
+    if(grp==="zone"){zone=parseInt(this.dataset.v);updateZone();}
+    applyFilters();
+  });
+});
+function updateZone(){
+  const box=document.getElementById("gotraInputs");
+  const note=document.getElementById("zoneNote");
+  const g3=document.getElementById("g3"),g4=document.getElementById("g4");
+  const msgs={2:"Self + Mother Gotra वाले profiles hide होंगे",3:"Self + Mother + Dadi Gotra वाले profiles hide होंगे",4:"सभी 4 Gotra वाले profiles hide होंगे"};
+  box.style.display=zone?"flex":"none";note.style.display=zone?"block":"none";
+  note.textContent=msgs[zone]||"";
+  if(g3)g3.style.display=zone>=3?"":"none";
+  if(g4)g4.style.display=zone>=4?"":"none";
+}
+
+// ── RESET / PANEL ─────────────────────────────────────
+function resetAll(){
+  ["gender","jc","zone"].forEach(grp=>{
+    document.querySelectorAll(`.pill[data-g="${grp}"]`).forEach(p=>p.classList.toggle("on",p.dataset.v===""||p.dataset.v==="0"));
+  });
+  zone=0;updateZone();
+  ["ageMin","ageMax","eduF","g1","g2","g3","g4"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  ["pDist","nDist","stateF"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  document.getElementById("q").value="";
+  applyFilters();
+}
+function openPanel(){document.getElementById("overlay").classList.add("on");document.getElementById("panel").classList.add("on");document.body.style.overflow="hidden";}
+function closePanel(){document.getElementById("overlay").classList.remove("on");document.getElementById("panel").classList.remove("on");document.body.style.overflow="";applyFilters();}
+function showLoader(){document.getElementById("cards").innerHTML=`<div class="empty"><div class="spin"></div><h3>Load हो रही है…</h3></div>`;}
+function showErr(m){document.getElementById("cards").innerHTML=`<div class="empty"><div class="ei">⚠️</div><h3>Error</h3><p>${m}</p></div>`;}
+function openWA(num){window.open(`https://wa.me/91${num}?text=${encodeURIComponent("नमस्ते! मीना समाज वैवाहिक से संपर्क।")}`,"_blank");}
+// sheetUrl input removed - auto load on startup
+
+// ── SUBMISSION: KEYS & URL ─────────────────────────
+function saveScriptUrl(){} // legacy - no longer needed
+function saveApiKey(){}    // legacy - no longer needed
+function getScriptUrl(){ return CONFIG.SCRIPT_URL; }
+function getApiKey(){ return ""; } // key is server-side now
+
+// ── TAB SWITCH ──────────────────────────────────────
+function switchTab(t){
+  document.querySelectorAll('.sub-tab').forEach(el=>el.classList.toggle('on',el.id==='tab-'+t));
+  document.querySelectorAll('.tab-panel').forEach(el=>el.classList.toggle('on',el.id==='panel-'+t));
+}
+
+// ── COLLECT FORM DATA ──────────────────────────────
+function collectFormData(prefix='f'){
+  const G=id=>document.getElementById(prefix+'-'+id)?.value?.trim()||'';
+  return{
+    name:G('name'),gender:G('gender'),dob:G('dob'),height:G('height'),
+    complexion:G('complexion'),education:G('edu'),job:G('job'),
+    selfGotra:G('sg'),motherGotra:G('mg'),dadiGotra:G('dg'),naniGotra:G('ng'),
+    fatherName:G('fn'),fatherOccup:G('fo'),jc:G('jc'),
+    presentAddr:G('pa'),pDistrict:G('pd'),pState:G('ps')||'Rajasthan',
+    nativeAddr:G('na'),nDistrict:G('nd'),nState:G('ns')||'Rajasthan',
+    mobile:G('mob'),whatsapp:G('wa')||G('mob'),
+    other:G('other')||'',
+  };
+}
+
+// ── SUBMIT TO SHEET ────────────────────────────────
+async function submitToSheet(data, statusId, btnId){
+  const url=getScriptUrl();
+  if(!url){setStatus(statusId,'error','⚠️ Apps Script URL save करें (ऊपर)।');return false;}
+  if(!data.name){setStatus(statusId,'error','⚠️ नाम जरूरी है।');return false;}
+  if(!data.mobile){setStatus(statusId,'error','⚠️ Mobile नंबर जरूरी है।');return false;}
+
+  document.getElementById(btnId).disabled=true;
+  setStatus(statusId,'loading','⏳ Submit हो रहा है…');
+
+  try{
+    // Content-Type: text/plain — CORS preflight avoid करता है
+    const resp=await fetch(url,{
+      method:'POST',
+      body:JSON.stringify({ action:'submit', data }),
+      headers:{'Content-Type':'text/plain'},
+      redirect:'follow'
+    });
+    const text=await resp.text();
+    let json;
+    try{ json=JSON.parse(text); }
+    catch(e){ json={success:false,error:'Response parse नहीं हुआ: '+text.substring(0,100)}; }
+
+    if(json.success){
+      setStatus(statusId,'success','✅ '+json.message);
+      return true;
+    }else{
+      setStatus(statusId,'error','❌ '+(json.error||'Error आया'));
+      document.getElementById(btnId).disabled=false;
+      return false;
+    }
+  }catch(e){
+    setStatus(statusId,'error','❌ Submit नहीं हुआ: '+e.message);
+    document.getElementById(btnId).disabled=false;
+    return false;
+  }
+}
+
+async function submitForm(){
+  const data=collectFormData('f');
+  const ok=await submitToSheet(data,'formStatus','formSubmitBtn');
+  if(ok)showSuccess();
+}
+
+// ── AI PARSER — Apps Script के through ────────────
+async function parseWithAI(){
+  const text=document.getElementById('aiText').value.trim();
+  if(!text){setStatus('parseStatus','error','⚠️ पहले text paste करें।');return;}
+
+  const url=getScriptUrl();
+  if(!url||url.includes('यहाँ_अपनी_URL')){
+    setStatus('parseStatus','error','⚠️ CONFIG में Apps Script URL set करें।');return;
+  }
+
+  document.getElementById('parseBtn').disabled=true;
+  setStatus('parseStatus','loading','🤖 AI समझ रहा है… थोड़ा इंतज़ार करें…');
+  document.getElementById('previewCard').style.display='none';
+  document.getElementById('aiFormFields').style.display='none';
+
+  try{
+    const resp=await fetch(url,{
+      method:'POST',
+      body:JSON.stringify({ action:'parse', text }),
+      headers:{'Content-Type':'text/plain'},
+      redirect:'follow'
+    });
+    const json=await resp.json();
+
+    if(!json.success){
+      setStatus('parseStatus','error','❌ '+(json.error||'Parse नहीं हुआ'));
+      document.getElementById('parseBtn').disabled=false;
+      return;
+    }
+
+    const parsed=json.data;
+
+    // Fill AI form fields
+    const F=(id,val)=>{
+      const el=document.getElementById('a-'+id);
+      if(!el||!val)return;
+      if(el.tagName==='SELECT'){
+        [...el.options].forEach(o=>{if(o.value===val||o.text===val)o.selected=true;});
+      } else el.value=val;
+    };
+    F('name',parsed.name);F('gender',parsed.gender);F('dob',parsed.dob);
+    F('height',parsed.height);F('edu',parsed.education);F('job',parsed.job);
+    F('sg',parsed.selfGotra);F('mg',parsed.motherGotra);
+    F('dg',parsed.dadiGotra);F('ng',parsed.naniGotra);
+    F('fn',parsed.fatherName);F('fo',parsed.fatherOccup);
+    F('jc',parsed.jc);F('mob',parsed.mobile);
+    F('pa',parsed.presentAddr);F('pd',parsed.pDistrict);
+    F('na',parsed.nativeAddr);F('nd',parsed.nDistrict);
+
+    // Preview
+    const fields=[
+      ['नाम',parsed.name],['लिंग',parsed.gender],['जन्म तिथि',parsed.dob],
+      ['ऊँचाई',parsed.height],['शिक्षा',parsed.education],['नौकरी',parsed.job],
+      ['Self Gotra',parsed.selfGotra],['Mother Gotra',parsed.motherGotra],
+      ['Dadi Gotra',parsed.dadiGotra],['Nani Gotra',parsed.naniGotra],
+      ['पिता',parsed.fatherName],['जमींदार/चौकीदार',parsed.jc],
+      ['जिला',parsed.pDistrict],['Mobile',parsed.mobile],
+    ].filter(([,v])=>v);
+
+    document.getElementById('previewGrid').innerHTML=
+      fields.map(([l,v])=>`<div class="pf-item"><div class="pf-l">${l}</div><div class="pf-v">${v}</div></div>`).join('');
+    document.getElementById('previewCard').style.display='block';
+    document.getElementById('aiFormFields').style.display='block';
+    setStatus('parseStatus','success','✅ AI ने जानकारी निकाल ली! नीचे check करें।');
+
+  }catch(e){
+    setStatus('parseStatus','error','❌ Error: '+e.message);
+  }
+  document.getElementById('parseBtn').disabled=false;
+}
+
+async function submitAIForm(){
+  const G=id=>document.getElementById('a-'+id)?.value?.trim()||'';
+  const data={
+    name:G('name'),gender:G('gender'),dob:G('dob'),height:G('height'),
+    education:G('edu'),job:G('job'),
+    selfGotra:G('sg'),motherGotra:G('mg'),dadiGotra:G('dg'),naniGotra:G('ng'),
+    fatherName:G('fn'),fatherOccup:G('fo'),jc:G('jc'),
+    presentAddr:G('pa'),pDistrict:G('pd'),pState:'Rajasthan',
+    nativeAddr:G('na'),nDistrict:G('nd'),nState:'Rajasthan',
+    mobile:G('mob'),whatsapp:G('mob'),other:'',
+  };
+  const ok=await submitToSheet(data,'aiSubmitStatus','aiSubmitBtn');
+  if(ok)showSuccess();
+}
+
+// ── SUCCESS ────────────────────────────────────────
+function showSuccess(){
+  document.querySelectorAll('.tab-panel').forEach(el=>el.style.display='none');
+  document.querySelector('.sub-tabs').style.display='none';
+  const s=document.getElementById('successBox');
+  s.style.display='block';
+  // Add to local list too
+  applyFilters();
+}
+function resetSubmit(){
+  document.querySelectorAll('.tab-panel').forEach(el=>{el.style.display='';el.classList.remove('on');});
+  document.getElementById('panel-form').classList.add('on');
+  document.querySelector('.sub-tabs').style.display='flex';
+  document.getElementById('successBox').style.display='none';
+  switchTab('form');
+  // Reset form
+  document.querySelectorAll('#panel-form input, #panel-form select, #panel-form textarea').forEach(el=>{if(el.type!=='submit')el.value='';});
+  document.querySelectorAll('#panel-ai input[id^="a-"], #panel-ai select[id^="a-"]').forEach(el=>el.value='');
+  document.getElementById('aiText').value='';
+  document.getElementById('previewCard').style.display='none';
+  document.getElementById('aiFormFields').style.display='none';
+  ['parseStatus','aiSubmitStatus','formStatus'].forEach(id=>setStatus(id,'',''));
+  ['formSubmitBtn','aiSubmitBtn','parseBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=false;});
+}
+
+// ── STATUS HELPER ─────────────────────────────────
+function setStatus(id,type,msg){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.className='parse-status'+(type?' '+type:'');
+  el.style.display=msg?'block':'none';
+  el.textContent=msg;
+}
+</script>
+</body>
+</html>
