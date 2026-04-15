@@ -192,20 +192,32 @@ body{
 .tag.hi{background:var(--p-bg);border-color:transparent;color:var(--p);}
 .c-div{height:1px;background:var(--border);margin:0 14px;}
 .c-body{padding:10px 14px;}
-.c-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px;}
-.cf-l{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;}
-.cf-v{font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;}
-.c-gotra{margin-top:10px;padding:8px 10px;background:var(--bg);border-radius:var(--r-s);}
+/* Each field full width, wrapping */
+.c-field{margin-bottom:8px;}
+.c-field:last-child{margin-bottom:0;}
+.cf-l{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px;}
+.cf-v{font-size:13px;font-weight:500;color:var(--t1);line-height:1.5;word-break:break-word;white-space:normal;}
+.c-gotra{margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:var(--r-s);}
 .g-head{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
 .g-tags{display:flex;flex-wrap:wrap;gap:4px;}
 .g-tag{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--t2);}
 .g-tag small{font-size:9px;color:var(--t3);margin-right:2px;}
 .g-tag.bad{background:#FFF3F2;border-color:#FFCDD2;color:#C62828;}
-.c-addr{padding:8px 14px 0;font-size:12px;color:var(--t2);display:flex;gap:5px;}
+.c-addr{padding:6px 14px 0;font-size:12px;color:var(--t2);display:flex;gap:5px;line-height:1.5;}
 .c-addr+.c-addr{padding-top:3px;}
-.c-addr-note{padding:6px 14px 10px;font-size:11px;color:var(--t3);font-style:italic;}
+/* View more button */
+.btn-view-more{
+  width:calc(100% - 28px);margin:10px 14px 0;
+  padding:8px;background:var(--bg);
+  border:1.5px solid var(--border);border-radius:var(--r-s);
+  font-size:12px;font-weight:600;color:var(--t2);
+  cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:all .15s;
+}
+.btn-view-more:hover{border-color:var(--p);color:var(--p);}
 .c-foot{
-  padding:10px 14px 12px;
+  padding:10px 14px 12px;margin-top:10px;
   display:grid;grid-template-columns:1fr 1fr;gap:7px;
   border-top:1px solid var(--border);
 }
@@ -218,6 +230,70 @@ body{
 .c-btn:active{opacity:.75;}
 .btn-wa{background:#25D366;color:#fff;}
 .btn-ph{background:var(--bg);border:1px solid var(--border);color:var(--t1);}
+
+/* ── PROFILE DETAIL PAGE ─────────────────────────── */
+.detail-page{
+  position:fixed;inset:0;background:var(--bg);
+  z-index:70;overflow-y:auto;
+  transform:translateX(100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  padding-bottom:80px;
+}
+.detail-page.open{transform:translateX(0);}
+.detail-topbar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 16px;height:54px;
+  display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:5;
+}
+.detail-body{max-width:700px;margin:0 auto;padding:16px;}
+.det-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
+.det-head{
+  background:linear-gradient(135deg,#4A0010,#D84315);
+  padding:20px;color:#fff;
+  display:flex;align-items:center;gap:14px;
+}
+.det-av{
+  width:64px;height:64px;border-radius:50%;
+  background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;flex-shrink:0;overflow:hidden;
+}
+.det-av img{width:100%;height:100%;object-fit:cover;}
+.det-name{font-size:18px;font-weight:700;}
+.det-sub{font-size:12px;opacity:.85;margin-top:3px;}
+.det-section{padding:14px 16px;}
+.det-section-title{
+  font-size:11px;font-weight:700;color:var(--t3);
+  text-transform:uppercase;letter-spacing:.5px;
+  margin-bottom:10px;padding-bottom:6px;
+  border-bottom:1px solid var(--border);
+}
+.det-row{display:flex;gap:12px;margin-bottom:10px;align-items:flex-start;}
+.det-row:last-child{margin-bottom:0;}
+.det-label{font-size:11px;font-weight:700;color:var(--t3);min-width:90px;flex-shrink:0;padding-top:2px;}
+.det-value{font-size:13px;color:var(--t1);line-height:1.6;word-break:break-word;flex:1;}
+.det-divider{height:1px;background:var(--border);margin:0;}
+/* Raw text section */
+.raw-section{padding:14px 16px;}
+.raw-text{
+  background:var(--bg);border-radius:var(--r-s);
+  padding:12px;font-size:12px;color:var(--t2);
+  line-height:1.8;word-break:break-word;
+  white-space:pre-wrap;
+}
+/* Delete section */
+.delete-section{padding:14px 16px;}
+.btn-delete{
+  width:100%;padding:11px;
+  background:#fff;border:2px solid #FFCDD2;
+  border-radius:var(--r-s);color:#C62828;
+  font-size:13px;font-weight:600;cursor:pointer;
+  font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:all .15s;
+}
+.btn-delete:hover{background:#FFEBEE;}
 
 /* ── EMPTY / LOADER ─────────────────────────────── */
 .empty{grid-column:1/-1;text-align:center;padding:64px 20px;color:var(--t3);}
@@ -972,7 +1048,7 @@ body{
         <div class="cr-info">
           <div class="cr-label">WhatsApp / Mobile</div>
           <!-- ⚠️ अपना नंबर यहाँ डालें -->
-          <div class="cr-value"><a href="https://wa.me/91XXXXXXXXXX">+91 XXXX-XXXXXX</a></div>
+          <div class="cr-value"><a href="https://wa.me/917014067853">+91 7014-067853</a></div>
         </div>
       </div>
 
@@ -981,7 +1057,7 @@ body{
         <div class="cr-info">
           <div class="cr-label">Email</div>
           <!-- ⚠️ अपना email यहाँ डालें -->
-          <div class="cr-value"><a href="mailto:yourmail@gmail.com">yourmail@gmail.com</a></div>
+          <div class="cr-value"><a href="mailto:junctionteacher@gmail.com">junctionteacher@gmail.com</a></div>
         </div>
       </div>
 
@@ -1011,7 +1087,7 @@ body{
         <li>Profile Add करना पूर्णतः निःशुल्क है</li>
       </ul>
       <!-- ⚠️ अपना नंबर यहाँ डालें -->
-      <button class="share-btn" style="margin-top:12px" onclick="window.open('https://wa.me/91XXXXXXXXXX?text='+encodeURIComponent('नमस्ते! मैं अपनी profile add करना चाहता/चाहती हूँ।'),'_blank')">
+      <button class="share-btn" style="margin-top:12px" onclick="window.open('https://wa.me/917014067853?text='+encodeURIComponent('नमस्ते! मैं अपनी profile add करना चाहता/चाहती हूँ।'),'_blank')">
         💬 WhatsApp पर Profile भेजें
       </button>
     </div>
@@ -1022,6 +1098,15 @@ body{
       <button class="share-btn" onclick="shareApp()">📤 Share करें</button>
     </div>
   </div>
+</div>
+
+<!-- ══ PROFILE DETAIL PAGE ══ -->
+<div class="detail-page" id="detailPage">
+  <div class="detail-topbar">
+    <button class="back-btn" onclick="closeDetail()">←</button>
+    <div class="page-title" id="detailTitle">Profile</div>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
 </div>
 
 <!-- FILTER OVERLAY + PANEL -->
@@ -1131,21 +1216,29 @@ const DISTS=["Ajmer","Alwar","Anupgarh","Balotra","Banswara","Baran","Barmer","B
 // ── AUTO LOAD on startup ──────────────────────────────
 async function autoLoad(){
   if(!CONFIG.SCRIPT_URL || CONFIG.SCRIPT_URL.includes('यहाँ_अपनी_URL')){
-    showErr("CONFIG में Apps Script URL set करें।"); return;
+    showErr("Apps Script URL set नहीं है।"); return;
   }
   showLoader();
   try{
     const r=await fetch(CONFIG.SCRIPT_URL,{redirect:'follow'});
+    if(!r.ok) throw new Error("Server error: "+r.status);
     const j=await r.json();
     if(j.error) throw new Error(j.error);
     ALL=j.profiles||[];
     document.getElementById('countTag').textContent=ALL.length+' profiles';
-    document.getElementById('statCount') && (document.getElementById('statCount').textContent=ALL.length);
+    const sc=document.getElementById('statCount');
+    if(sc) sc.textContent=ALL.length;
     refreshStates();
     applyFilters();
   }catch(e){
-    showErr('Data load नहीं हुआ: '+e.message);
-    document.getElementById('countTag').textContent='Error';
+    document.getElementById('cards').innerHTML=`
+      <div class="empty">
+        <div class="ei">⚠️</div>
+        <h3>Data load नहीं हुआ</h3>
+        <p style="margin-bottom:16px">${e.message}</p>
+        <button onclick="autoLoad()" style="padding:10px 24px;background:var(--p);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">🔄 फिर से try करें</button>
+      </div>`;
+    document.getElementById('countTag').textContent='Retry करें';
   }
 }
 
@@ -1216,7 +1309,7 @@ function parseCSV(text){
   rows.slice(2).forEach((r,i)=>{
     if(!r[2])return;
     if((r[28]||"").toLowerCase()==="inactive")return;
-    ALL.push({id:i,name:r[2]||"",gender:r[3]||"",age:parseInt(r[5])||0,height:r[6]||"",complexion:r[7]||"",education:r[8]||"",job:r[9]||"",selfGotra:r[10]||"",motherGotra:r[11]||"",dadiGotra:r[12]||"",naniGotra:r[13]||"",fatherName:r[14]||"",fatherOccup:r[15]||"",jc:r[16]||"",presentAddr:r[17]||"",pDistrict:r[18]||"",pState:r[19]||"",nativeAddr:r[20]||"",nDistrict:r[21]||"",nState:r[22]||"",mobile:r[23]||"",whatsapp:r[24]||"",photo:r[25]||"",other:r[26]||""});
+    ALL.push({id:i,name:r[2]||"",gender:r[3]||"",age:parseInt(r[5])||0,height:r[6]||"",complexion:r[7]||"",education:r[8]||"",job:r[9]||"",selfGotra:r[10]||"",motherGotra:r[11]||"",dadiGotra:r[12]||"",naniGotra:r[13]||"",fatherName:r[14]||"",fatherOccup:r[15]||"",jc:r[16]||"",presentAddr:r[17]||"",pDistrict:r[18]||"",pState:r[19]||"",nativeAddr:r[20]||"",nDistrict:r[21]||"",nState:r[22]||"",mobile:r[23]||"",whatsapp:r[24]||"",photo:r[25]||"",other:r[26]||"",rawWhatsapp:r[27]||""});
   });
 }
 function refreshStates(){
@@ -1281,26 +1374,28 @@ function buildCard(p,i){
   const addr2=[p.nativeAddr,p.nDistrict,p.nState].filter(Boolean).join(", ");
   const wa=(p.whatsapp||p.mobile||"").replace(/\D/g,"");
   const foot=wa?`<div class="c-foot"><button class="c-btn btn-wa" onclick="openWA('${wa}')">💬 WhatsApp</button><button class="c-btn btn-ph" onclick="location.href='tel:${p.mobile}'">📞 Call</button></div>`:"";
+  const idx=ALL.indexOf(p);
+
   return`<div class="card" style="animation-delay:${i*.03}s">
-  <div class="c-head"><div class="c-av">${av}</div>
-  <div class="c-meta">
-    <div class="c-name">${p.name}</div>
-    <div class="c-sub">${[p.age?p.age+" वर्ष":"",p.height,p.complexion].filter(Boolean).join(" · ")||"—"}</div>
-    <div class="c-tags"><span class="tag">${p.gender==="Female"?"लड़की":"लड़का"}</span>${jcTag}</div>
-  </div></div>
+  <div class="c-head">
+    <div class="c-av">${av}</div>
+    <div class="c-meta">
+      <div class="c-name">${p.name||"—"}</div>
+      <div class="c-sub">${[p.age?p.age+" वर्ष":"",p.height,p.complexion].filter(Boolean).join(" · ")||"—"}</div>
+      <div class="c-tags"><span class="tag">${p.gender==="Female"?"लड़की":"लड़का"}</span>${jcTag}</div>
+    </div>
+  </div>
   <div class="c-div"></div>
   <div class="c-body">
-    <div class="c-grid">
-      <div><div class="cf-l">शिक्षा</div><div class="cf-v">${p.education||"—"}</div></div>
-      <div><div class="cf-l">नौकरी</div><div class="cf-v">${p.job||"—"}</div></div>
-      <div><div class="cf-l">पिता</div><div class="cf-v">${p.fatherName||"—"}</div></div>
-      <div><div class="cf-l">पिता का काम</div><div class="cf-v">${p.fatherOccup||"—"}</div></div>
-    </div>
-    ${gotras?`<div class="c-gotra"><div class="g-head">गोत्र</div><div class="g-tags">${gotras}</div></div>`:""}
+    ${p.education?`<div class="c-field"><div class="cf-l">🎓 शिक्षा</div><div class="cf-v">${p.education}</div></div>`:""}
+    ${p.job?`<div class="c-field"><div class="cf-l">💼 नौकरी / व्यवसाय</div><div class="cf-v">${p.job}</div></div>`:""}
+    ${p.fatherName?`<div class="c-field"><div class="cf-l">👨 पिता का नाम</div><div class="cf-v">${p.fatherName}</div></div>`:""}
+    ${p.fatherOccup?`<div class="c-field"><div class="cf-l">🏢 पिता का काम</div><div class="cf-v">${p.fatherOccup}</div></div>`:""}
+    ${gotras?`<div class="c-gotra"><div class="g-head">🔱 गोत्र</div><div class="g-tags">${gotras}</div></div>`:""}
   </div>
   ${addr1?`<div class="c-addr">📍 <span>${addr1}</span></div>`:""}
   ${addr2?`<div class="c-addr">🏡 <span>${addr2}</span></div>`:""}
-  ${p.other?`<div class="c-addr-note">— ${p.other}</div>`:""}
+  <button class="btn-view-more" onclick="openDetail(${idx})">👁 पूरी Profile देखें</button>
   ${foot}
 </div>`;
 }
@@ -1540,6 +1635,134 @@ function resetSubmit(){
   ['parseStatus','aiSubmitStatus','formStatus'].forEach(id=>setStatus(id,'',''));
   ['formSubmitBtn','aiSubmitBtn','parseBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=false;});
 }
+
+// ── PROFILE DETAIL ────────────────────────────────────
+function openDetail(idx){
+  const p = ALL[idx];
+  if(!p) return;
+  document.getElementById('detailTitle').textContent = p.name || 'Profile';
+  const wa = (p.whatsapp||p.mobile||'').replace(/\D/g,'');
+  const deleteMsg = encodeURIComponent(`नमस्ते! मेरी profile delete करनी है।\nनाम: ${p.name}\nMobile: ${p.mobile}\nकृपया मेरी profile हटा दें।`);
+
+  function dr(label, value){
+    if(!value) return '';
+    return `<div class="det-row"><div class="det-label">${label}</div><div class="det-value">${value}</div></div>`;
+  }
+
+  document.getElementById('detailBody').innerHTML = `
+    <div class="det-card">
+      <div class="det-head">
+        <div class="det-av">${p.photo?`<img src="${p.photo}">`:(p.gender==="Female"?"👩":"👨")}</div>
+        <div>
+          <div class="det-name">${p.name||"—"}</div>
+          <div class="det-sub">${[p.age?p.age+" वर्ष":"",p.height,p.complexion,p.gender==="Female"?"लड़की":"लड़का"].filter(Boolean).join(" · ")}</div>
+        </div>
+      </div>
+
+      <div class="det-divider"></div>
+      <div class="det-section">
+        <div class="det-section-title">🎓 शिक्षा और नौकरी</div>
+        ${dr("शिक्षा", p.education)}
+        ${dr("नौकरी", p.job)}
+      </div>
+
+      <div class="det-divider"></div>
+      <div class="det-section">
+        <div class="det-section-title">🔱 गोत्र</div>
+        ${dr("Self Gotra", p.selfGotra)}
+        ${dr("Mother Gotra", p.motherGotra)}
+        ${dr("Dadi Gotra", p.dadiGotra)}
+        ${dr("Nani Gotra", p.naniGotra)}
+      </div>
+
+      <div class="det-divider"></div>
+      <div class="det-section">
+        <div class="det-section-title">👨‍👩‍👧 परिवार</div>
+        ${dr("पिता का नाम", p.fatherName)}
+        ${dr("पिता का काम", p.fatherOccup)}
+        ${dr("जमींदार/चौकीदार", p.jc !== "दोनों नहीं" ? p.jc : "")}
+      </div>
+
+      <div class="det-divider"></div>
+      <div class="det-section">
+        <div class="det-section-title">📍 पता</div>
+        ${dr("वर्तमान पता", [p.presentAddr,p.pDistrict,p.pState].filter(Boolean).join(", "))}
+        ${dr("मूल पता", [p.nativeAddr,p.nDistrict,p.nState].filter(Boolean).join(", "))}
+      </div>
+
+      <div class="det-divider"></div>
+      <div class="det-section">
+        <div class="det-section-title">📱 संपर्क</div>
+        ${dr("Mobile", p.mobile)}
+        ${dr("WhatsApp", p.whatsapp)}
+      </div>
+
+      ${p.other ? `<div class="det-divider"></div>
+      <div class="det-section">
+        <div class="det-section-title">ℹ️ अन्य जानकारी</div>
+        <div class="det-value">${p.other}</div>
+      </div>` : ""}
+
+      ${(p.rawWhatsapp || p.other) ? `<div class="det-divider"></div>
+      <div class="raw-section">
+        <div class="det-section-title" style="margin-bottom:8px">📋 Original Text</div>
+        <div class="raw-text">${(p.rawWhatsapp || p.other || '').replace(/</g,'&lt;')}</div>
+      </div>` : ""}
+    </div>
+
+    ${wa ? `<div class="det-card">
+      <div class="c-foot" style="padding:14px 16px;border-top:none;">
+        <button class="c-btn btn-wa" onclick="openWA('${wa}')">💬 WhatsApp</button>
+        <button class="c-btn btn-ph" onclick="location.href='tel:${p.mobile}'">📞 Call</button>
+      </div>
+    </div>` : ""}
+
+    <div class="det-card">
+      <div class="delete-section">
+        <div class="det-section-title" style="margin-bottom:8px;color:#C62828;">🗑️ Profile हटाएँ</div>
+        <p style="font-size:12px;color:var(--t2);margin-bottom:10px;">अगर आपका रिश्ता तय हो गया है या profile हटानी है तो WhatsApp पर request भेजें।</p>
+        <button class="btn-delete" onclick="window.open('https://wa.me/918290934881?text=${deleteMsg}','_blank')">
+          🗑️ Profile Delete Request भेजें
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('detailPage').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail(){
+  document.getElementById('detailPage').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── BACK BUTTON HANDLER ────────────────────────────────
+window.addEventListener('popstate', function(e){
+  // If detail page open → close it
+  if(document.getElementById('detailPage').classList.contains('open')){
+    closeDetail(); return;
+  }
+  // If any page overlay open → close it
+  const pages = ['about','privacy','contact','submit'];
+  for(const pg of pages){
+    const el = document.getElementById('page-'+pg);
+    if(el && el.classList.contains('open')){
+      showPage('home'); return;
+    }
+  }
+  // If filter panel open → close it
+  if(document.getElementById('panel').classList.contains('on')){
+    closePanel(); return;
+  }
+  // Otherwise allow exit
+});
+
+// Push state on every navigation so back button works
+function pushState(){
+  history.pushState({page:'app'}, '', location.href);
+}
+window.addEventListener('load', ()=>{ pushState(); });
 
 // ── STATUS HELPER ─────────────────────────────────
 function setStatus(id,type,msg){
