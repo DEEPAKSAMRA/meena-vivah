@@ -278,9 +278,10 @@ body{
 .raw-section{padding:14px 16px;}
 .raw-text{
   background:var(--bg);border-radius:var(--r-s);
-  padding:12px;font-size:12px;color:var(--t2);
-  line-height:1.8;word-break:break-word;
-  white-space:pre-wrap;
+  padding:12px;font-size:13px;color:var(--t2);
+  line-height:1.9;word-break:break-word;
+  border-left:3px solid var(--p);
+  font-family:'Noto Sans Devanagari','Poppins',sans-serif;
 }
 /* Delete section */
 .delete-section{padding:14px 16px;}
@@ -1703,10 +1704,10 @@ function openDetail(idx){
         <div class="det-value">${p.other}</div>
       </div>` : ""}
 
-      ${(p.rawWhatsapp || p.other) ? `<div class="det-divider"></div>
+      ${p.rawWhatsapp ? `<div class="det-divider"></div>
       <div class="raw-section">
-        <div class="det-section-title" style="margin-bottom:8px">📋 Original Text</div>
-        <div class="raw-text">${(p.rawWhatsapp || p.other || '').replace(/</g,'&lt;')}</div>
+        <div class="det-section-title" style="margin-bottom:8px">📋 WhatsApp से मिला पूरा Text</div>
+        <div class="raw-text">${p.rawWhatsapp.replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>
       </div>` : ""}
     </div>
 
