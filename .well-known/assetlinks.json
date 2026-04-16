@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.meenabandhan.meenabandhan",
+    "sha256_cert_fingerprints": [
+      "D8:FC:F6:84:06:09:14:BC:C5:18:4C:43:83:65:A0:0E:B1:72:42:56:24:FE:4F:3F:42:91:D6:4E:E7:18:FC:5E"
+    ]
+  }
+}]
