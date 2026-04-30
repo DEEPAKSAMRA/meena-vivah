@@ -231,7 +231,63 @@ body{
 .btn-wa{background:#25D366;color:#fff;}
 .btn-ph{background:var(--bg);border:1px solid var(--border);color:var(--t1);}
 
-/* ── PROFILE DETAIL PAGE ─────────────────────────── */
+/* ── NEW BADGE / BOOKMARK / SHARE ────────────────── */
+.new-badge{
+  position:absolute;top:8px;right:8px;
+  background:linear-gradient(135deg,#FF6B6B,#FF8C42);
+  color:#fff;font-size:9px;font-weight:700;
+  padding:3px 8px;border-radius:10px;
+  text-transform:uppercase;letter-spacing:.5px;
+  box-shadow:0 2px 4px rgba(255,107,107,.3);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+.card{position:relative;}
+
+.btn-bookmark{
+  position:absolute;top:10px;right:10px;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.9);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;
+  transition:all .2s;z-index:2;
+}
+.btn-bookmark:hover{transform:scale(1.1);}
+.btn-bookmark.saved{background:#FFF3E0;border-color:var(--p);}
+
+.card.has-new .btn-bookmark{top:38px;}
+
+.btn-share-card{
+  width:calc(100% - 28px);margin:8px 14px 0;
+  padding:8px;background:#25D366;
+  border:none;border-radius:var(--r-s);
+  font-size:12px;font-weight:600;color:#fff;
+  cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:opacity .15s;
+}
+.btn-share-card:active{opacity:.8;}
+
+/* Filter tab in bottom sheet */
+.filter-tabs{
+  display:flex;border-bottom:1px solid var(--border);
+  margin:-16px -16px 16px;padding:0 16px;
+}
+.f-tab{
+  flex:1;padding:12px 8px;text-align:center;
+  font-size:13px;font-weight:600;color:var(--t3);
+  cursor:pointer;border:none;background:none;
+  font-family:inherit;border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:all .2s;
+}
+.f-tab.on{color:var(--p);border-bottom-color:var(--p);}
+.f-tab .count{
+  display:inline-block;background:var(--p);color:#fff;
+  font-size:10px;padding:1px 6px;border-radius:10px;
+  margin-left:4px;font-weight:700;
+}
+
 .detail-page{
   position:fixed;inset:0;background:var(--bg);
   z-index:70;overflow-y:auto;
@@ -647,8 +703,11 @@ body{
 <div class="search-bar">
   <div class="search-wrap">
     <span class="si">🔍</span>
-    <input id="q" type="text" placeholder="नाम, गोत्र, शिक्षा, जिला खोजें…" oninput="applyFilters()">
+    <input id="q" type="text" placeholder="नाम, गोत्र, mobile, जिला खोजें…" oninput="applyFilters()">
   </div>
+  <button class="filter-btn" id="bmToggle" onclick="toggleBookmarksView()" title="Saved Profiles" style="margin-right:6px;">
+    ☆
+  </button>
   <button class="filter-btn" id="filterBtn" onclick="openPanel()">
     <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
     <span class="f-dot"></span>
@@ -1225,7 +1284,25 @@ async function autoLoad(){
     if(!r.ok) throw new Error("Server error: "+r.status);
     const j=await r.json();
     if(j.error) throw new Error(j.error);
-    ALL=j.profiles||[];
+    // Reverse so newest profiles (last rows in sheet) appear first
+    ALL=(j.profiles||[]).slice().reverse();
+    // Mark profiles added in last 7 days as "new"
+    const now = new Date();
+    ALL.forEach((p) => {
+      p._isNew = false;
+      if (p.entryDate) {
+        const parts = p.entryDate.split('-');
+        if (parts.length === 3) {
+          const d = new Date(+parts[2], +parts[1]-1, +parts[0]);
+          if (!isNaN(d)) {
+            const days = (now - d) / (1000*60*60*24);
+            p._isNew = days <= 7;
+          }
+        }
+      }
+    });
+    // Load bookmarks
+    loadBookmarks();
     document.getElementById('countTag').textContent=ALL.length+' profiles';
     const sc=document.getElementById('statCount');
     if(sc) sc.textContent=ALL.length;
@@ -1335,13 +1412,30 @@ function conflicts(p,avoid){
   if(!avoid.length)return false;
   return[p.selfGotra,p.motherGotra,p.dadiGotra,p.naniGotra].map(x=>x.toLowerCase()).some(x=>avoid.includes(x));
 }
+let SHOW_BOOKMARKS_ONLY = false;
+
+function toggleBookmarksView(){
+  SHOW_BOOKMARKS_ONLY = !SHOW_BOOKMARKS_ONLY;
+  const btn = document.getElementById('bmToggle');
+  if(btn){
+    btn.classList.toggle('on', SHOW_BOOKMARKS_ONLY);
+    btn.textContent = SHOW_BOOKMARKS_ONLY ? '⭐ Saved' : '☆ Saved';
+  }
+  applyFilters();
+}
+
 function applyFilters(){
-  const q=(g("q")||"").toLowerCase();
+  const q=(g("q")||"").toLowerCase().trim();
   const gender=pill("gender"),jc=pill("jc");
   const amin=parseInt(g("ageMin"))||0,amax=parseInt(g("ageMax"))||999;
   const edu=g("eduF").toLowerCase(),pd=g("pDist"),nd=g("nDist"),st=g("stateF");
   const avoid=avoidList();
   FILTERED=ALL.filter(p=>{
+    // Bookmark filter
+    if(SHOW_BOOKMARKS_ONLY){
+      const pid = String(p.mobile || p.id);
+      if(!BOOKMARKS.includes(pid)) return false;
+    }
     if(gender&&p.gender!==gender)return false;
     if(jc&&!p.jc.toLowerCase().includes(jc.toLowerCase()))return false;
     if(p.age&&(p.age<amin||p.age>amax))return false;
@@ -1350,7 +1444,16 @@ function applyFilters(){
     if(nd&&p.nDistrict!==nd)return false;
     if(st&&p.pState!==st&&p.nState!==st)return false;
     if(conflicts(p,avoid))return false;
-    if(q){const blob=[p.name,p.selfGotra,p.motherGotra,p.education,p.job,p.pDistrict,p.nDistrict].join(" ").toLowerCase();if(!blob.includes(q))return false;}
+    if(q){
+      // If query is all digits → search mobile only
+      const isMobile = /^\d{4,}$/.test(q);
+      if(isMobile){
+        if(!(p.mobile||'').includes(q) && !(p.whatsapp||'').includes(q)) return false;
+      } else {
+        const blob=[p.name,p.selfGotra,p.motherGotra,p.dadiGotra,p.naniGotra,p.education,p.job,p.fatherName,p.pDistrict,p.nDistrict,p.mobile,p.whatsapp].join(" ").toLowerCase();
+        if(!blob.includes(q))return false;
+      }
+    }
     return true;
   });
   render();
@@ -1374,10 +1477,16 @@ function buildCard(p,i){
   const addr1=[p.presentAddr,p.pDistrict,p.pState].filter(Boolean).join(", ");
   const addr2=[p.nativeAddr,p.nDistrict,p.nState].filter(Boolean).join(", ");
   const wa=(p.whatsapp||p.mobile||"").replace(/\D/g,"");
-  const foot=wa?`<div class="c-foot"><button class="c-btn btn-wa" onclick="openWA('${wa}')">💬 WhatsApp</button><button class="c-btn btn-ph" onclick="location.href='tel:${p.mobile}'">📞 Call</button></div>`:"";
+  const foot=wa?`<div class="c-foot"><button class="c-btn btn-wa" onclick="event.stopPropagation();openWA('${wa}')">💬 WhatsApp</button><button class="c-btn btn-ph" onclick="event.stopPropagation();location.href='tel:${p.mobile}'">📞 Call</button></div>`:"";
   const idx=ALL.indexOf(p);
+  const profileId = p.mobile || p.id || idx;
+  const isSaved = isBookmarked(profileId);
+  const newBadge = p._isNew ? `<div class="new-badge">🆕 New</div>` : '';
+  const cardClass = p._isNew ? 'card has-new' : 'card';
 
-  return`<div class="card" style="animation-delay:${i*.03}s">
+  return`<div class="${cardClass}" style="animation-delay:${i*.03}s">
+  ${newBadge}
+  <button class="btn-bookmark ${isSaved?'saved':''}" onclick="event.stopPropagation();toggleBookmark('${profileId}', this)" title="${isSaved?'Remove bookmark':'Save profile'}">${isSaved?'⭐':'☆'}</button>
   <div class="c-head">
     <div class="c-av">${av}</div>
     <div class="c-meta">
@@ -1397,8 +1506,59 @@ function buildCard(p,i){
   ${addr1?`<div class="c-addr">📍 <span>${addr1}</span></div>`:""}
   ${addr2?`<div class="c-addr">🏡 <span>${addr2}</span></div>`:""}
   <button class="btn-view-more" onclick="openDetail(${idx})">👁 पूरी Profile देखें</button>
+  <button class="btn-share-card" onclick="event.stopPropagation();shareProfile(${idx})">📤 Profile Share करें</button>
   ${foot}
 </div>`;
+}
+
+// ── BOOKMARKS ────────────────────────────────────────
+let BOOKMARKS = [];
+function loadBookmarks(){
+  try { BOOKMARKS = JSON.parse(localStorage.getItem('bookmarks') || '[]'); }
+  catch(e) { BOOKMARKS = []; }
+}
+function saveBookmarks(){
+  try { localStorage.setItem('bookmarks', JSON.stringify(BOOKMARKS)); } catch(e){}
+}
+function isBookmarked(id){ return BOOKMARKS.includes(String(id)); }
+function toggleBookmark(id, btn){
+  id = String(id);
+  const idx = BOOKMARKS.indexOf(id);
+  if(idx >= 0){
+    BOOKMARKS.splice(idx, 1);
+    if(btn){ btn.classList.remove('saved'); btn.textContent = '☆'; }
+  } else {
+    BOOKMARKS.push(id);
+    if(btn){ btn.classList.add('saved'); btn.textContent = '⭐'; }
+  }
+  saveBookmarks();
+  // Refresh count if showing bookmarks tab
+  const bmTab = document.getElementById('bm-count');
+  if(bmTab) bmTab.textContent = BOOKMARKS.length;
+}
+
+// ── SHARE PROFILE ────────────────────────────────────
+function shareProfile(idx){
+  const p = ALL[idx];
+  if(!p) return;
+  const lines = [];
+  lines.push(`*मीना समाज वैवाहिक — Profile*`);
+  lines.push('');
+  if(p.name) lines.push(`👤 *नाम:* ${p.name}`);
+  if(p.gender) lines.push(`⚧ *लिंग:* ${p.gender==='Female'?'लड़की':'लड़का'}`);
+  if(p.age) lines.push(`🎂 *आयु:* ${p.age} वर्ष`);
+  if(p.height) lines.push(`📏 *ऊँचाई:* ${p.height}`);
+  if(p.education) lines.push(`🎓 *शिक्षा:* ${p.education}`);
+  if(p.job) lines.push(`💼 *नौकरी:* ${p.job}`);
+  if(p.selfGotra) lines.push(`🔱 *गोत्र:* ${p.selfGotra}${p.motherGotra?', '+p.motherGotra:''}${p.dadiGotra?', '+p.dadiGotra:''}`);
+  if(p.fatherName) lines.push(`👨 *पिता:* ${p.fatherName}`);
+  if(p.pDistrict || p.nDistrict) lines.push(`📍 *जिला:* ${p.pDistrict||p.nDistrict}`);
+  if(p.mobile) lines.push(`📱 *Mobile:* ${p.mobile}`);
+  lines.push('');
+  lines.push('अधिक profiles देखने के लिए App download करें:');
+  lines.push('https://play.google.com/store/apps/details?id=com.meenabandhan.meenabandhan');
+  const text = encodeURIComponent(lines.join('\n'));
+  window.open(`https://wa.me/?text=${text}`, '_blank');
 }
 
 // ── CHIPS ─────────────────────────────────────────────
@@ -1738,32 +1898,120 @@ function closeDetail(){
   document.body.style.overflow = '';
 }
 
-// ── BACK BUTTON HANDLER ────────────────────────────────
+// ── BACK BUTTON HANDLER (Comprehensive) ────────────────
+// Stack tracks open overlays in order
+let NAV_STACK = ['home'];
+
+// Every navigation pushes a state; popstate handles back
 window.addEventListener('popstate', function(e){
-  // If detail page open → close it
-  if(document.getElementById('detailPage').classList.contains('open')){
-    closeDetail(); return;
+  // Filter panel highest priority
+  const panel = document.getElementById('panel');
+  if(panel && panel.classList.contains('on')){
+    closePanel();
+    return;
   }
-  // If any page overlay open → close it
+  // Detail page next
+  if(document.getElementById('detailPage').classList.contains('open')){
+    closeDetail();
+    return;
+  }
+  // Bookmark view active
+  if(SHOW_BOOKMARKS_ONLY){
+    SHOW_BOOKMARKS_ONLY = false;
+    const btn = document.getElementById('bmToggle');
+    if(btn){ btn.classList.remove('on'); btn.textContent = '☆'; }
+    applyFilters();
+    history.pushState({state:'home'}, '', location.href);
+    return;
+  }
+  // Any sub-page open
   const pages = ['about','privacy','contact','submit'];
   for(const pg of pages){
     const el = document.getElementById('page-'+pg);
     if(el && el.classList.contains('open')){
-      showPage('home'); return;
+      // go to home
+      showPage('home', true); // skip pushState
+      history.pushState({state:'home'}, '', location.href);
+      return;
     }
   }
-  // If filter panel open → close it
-  if(document.getElementById('panel').classList.contains('on')){
-    closePanel(); return;
+  // Already on home — let exit happen
+  // But push another state so user can press back again
+  history.pushState({state:'home'}, '', location.href);
+  // Show exit confirmation toast
+  if(!window._exitWarnShown){
+    window._exitWarnShown = true;
+    showExitToast();
+    setTimeout(()=>{ window._exitWarnShown = false; }, 2000);
+  } else {
+    // Second back press within 2s → really exit
+    history.go(-3);  // go back enough to actually leave
   }
-  // Otherwise allow exit
 });
 
-// Push state on every navigation so back button works
-function pushState(){
-  history.pushState({page:'app'}, '', location.href);
+function showExitToast(){
+  let t = document.getElementById('exitToast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'exitToast';
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:opacity .3s;';
+    document.body.appendChild(t);
+  }
+  t.textContent = 'Exit करने के लिए फिर से Back दबाएँ';
+  t.style.opacity = '1';
+  setTimeout(()=>{ t.style.opacity = '0'; }, 1800);
 }
-window.addEventListener('load', ()=>{ pushState(); });
+
+// Push state when overlays open — tells browser "we have history"
+const _origShowPage = window.showPage;
+function showPageWithHistory(page){
+  if(typeof _origShowPage === 'function'){
+    _origShowPage(page);
+  }
+  if(page !== 'home'){
+    history.pushState({state:page}, '', location.href);
+  }
+}
+// Push state on filter panel open
+const _origOpenPanel = window.openPanel;
+function openPanelWithHistory(){
+  if(typeof _origOpenPanel === 'function'){ _origOpenPanel(); }
+  history.pushState({state:'panel'}, '', location.href);
+}
+// Push state on detail open
+const _origOpenDetail = window.openDetail;
+function openDetailWithHistory(idx){
+  if(typeof _origOpenDetail === 'function'){ _origOpenDetail(idx); }
+  history.pushState({state:'detail'}, '', location.href);
+}
+
+// Override after load
+window.addEventListener('load', ()=>{
+  // Push initial state
+  history.replaceState({state:'home'}, '', location.href);
+  history.pushState({state:'home'}, '', location.href);
+  
+  // Wrap functions
+  const _sp = window.showPage;
+  window.showPage = function(page, skipHistory){
+    _sp(page);
+    if(!skipHistory && page !== 'home'){
+      history.pushState({state:page}, '', location.href);
+    }
+  };
+  
+  const _op = window.openPanel;
+  window.openPanel = function(){
+    _op();
+    history.pushState({state:'panel'}, '', location.href);
+  };
+  
+  const _od = window.openDetail;
+  window.openDetail = function(idx){
+    _od(idx);
+    history.pushState({state:'detail'}, '', location.href);
+  };
+});
 
 // ── STATUS HELPER ─────────────────────────────────
 function setStatus(id,type,msg){
