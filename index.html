@@ -819,7 +819,7 @@ body{
     <div class="form-section">
       <div class="form-section-title">👤 व्यक्तिगत जानकारी</div>
       <div class="form-row"><label>पूरा नाम <em>*</em></label><input class="f-input" id="f-name" type="text" placeholder="जैसे: राम लाल मीना"></div>
-      <div class="form-row"><label>वैवाहिक स्थिति <em>*</em></label><select class="f-select" id="f-marital"><option value="">चुनें</option><option value="Unmarried">अविवाहित</option><option value="Divorced">तलाकशुदा (Divorcee)</option><option value="Nata Pratha">नाता प्रथा</option></select></div>
+      <div class="form-row"><label>वैवाहिक स्थिति <em>*</em></label><select class="f-select" id="f-marital"><option value="">चुनें</option><option value="Unmarried">अविवाहित</option><option value="Divorced">तलाकशुदा (Divorcee)</option></select></div>
       <div class="form-row-2">
         <div class="form-row">
           <label>लिंग <em>*</em></label>
@@ -974,7 +974,7 @@ body{
           <div class="form-row"><label>नाम</label><input class="f-input" id="a-name" type="text"></div>
           <div class="form-row"><label>लिंग</label><select class="f-select" id="a-gender"><option value="">चुनें</option><option value="Male">लड़का</option><option value="Female">लड़की</option></select></div>
         </div>
-        <div class="form-row"><label>वैवाहिक स्थिति <em>*</em></label><select class="f-select" id="a-marital"><option value="">चुनें</option><option value="Unmarried">अविवाहित</option><option value="Divorced">तलाकशुदा (Divorcee)</option><option value="Nata Pratha">नाता प्रथा</option></select></div>
+        <div class="form-row"><label>वैवाहिक स्थिति <em>*</em></label><select class="f-select" id="a-marital"><option value="">चुनें</option><option value="Unmarried">अविवाहित</option><option value="Divorced">तलाकशुदा (Divorcee)</option></select></div>
         <div class="form-row-2">
           <div class="form-row"><label>जन्म तिथि</label><input class="f-input" id="a-dob" type="text" placeholder="DD-MM-YYYY"></div>
           <div class="form-row"><label>ऊँचाई</label><input class="f-input" id="a-height" type="text" placeholder="5'8&quot;"></div>
@@ -1224,7 +1224,6 @@ body{
       <div class="pill-row">
         <button class="pill on" data-g="marital" data-v="">सभी</button>
         <button class="pill" data-g="marital" data-v="Divorced">तलाकशुदा (Divorcee)</button>
-        <button class="pill" data-g="marital" data-v="Nata Pratha">नाता प्रथा</button>
       </div>
     </div>
     <div class="fg"><div class="fg-label">आयु / Age</div>
@@ -1467,7 +1466,7 @@ function toggleBookmarksView(){
   applyFilters();
 }
 
-const MARITAL={"Unmarried":"अविवाहित","Divorced":"तलाकशुदा","Nata Pratha":"नाता प्रथा"};
+const MARITAL={"Unmarried":"अविवाहित","Divorced":"तलाकशुदा"};
 function maritalLabel(p){return MARITAL[p.maritalStatus]||"";}
 
 function applyFilters(){
