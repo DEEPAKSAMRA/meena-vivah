@@ -664,6 +664,39 @@ body{
   width:100%;padding:13px;background:var(--p);color:#fff;border:none;
   border-radius:var(--r-s);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
 }
+/* ── COMPACT LAYOUT ─────────────────────────────── */
+/* AdSense placeholder hidden until a real ad goes here */
+.ad-slot{display:none;}
+.topbar-main{height:48px;padding:0 12px;}
+.logo-text{font-size:15px;white-space:nowrap;}
+.count-tag{font-size:11px;white-space:nowrap;}
+.search-bar{padding:8px 12px;}
+.c-head{padding:10px 12px 8px;gap:9px;}
+.c-av{width:38px;height:38px;font-size:17px;}
+.c-meta{padding-right:48px;}
+.c-name{font-size:14px;}
+.c-sub{font-size:11.5px;margin-top:0;}
+.c-tags{margin-top:3px;gap:4px;}
+.tag{font-size:10px;padding:1px 7px;}
+.c-div{margin:0 12px;}
+.c-body{padding:8px 12px;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;}
+.c-field{margin-bottom:0;min-width:0;}
+.cf-l{font-size:9.5px;margin-bottom:0;}
+.cf-v{font-size:12px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.c-gotra{grid-column:1/-1;margin-top:0;padding:5px 8px;display:flex;align-items:center;gap:6px;}
+.g-head{margin-bottom:0;white-space:nowrap;}
+.g-tag{font-size:10.5px;padding:1px 6px;}
+.c-addr{padding:2px 12px 0;font-size:11px;line-height:1.35;}
+.c-addr span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0;}
+.c-addr+.c-addr{padding-top:2px;}
+.c-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 12px 0;}
+.c-actions .btn-view-more,.c-actions .btn-share-card{width:auto;margin:0;padding:6px;}
+.c-foot{padding:6px 12px 10px;margin-top:6px;gap:6px;}
+.c-btn{padding:7px;font-size:12px;}
+/* Overlays stop above the bottom nav, so the nav always separates page content
+   (WhatsApp / Call buttons) from the app's bottom banner */
+.detail-page,.page-overlay{bottom:var(--nav-h);padding-bottom:16px;}
+
 </style>
 </head>
 <body>
@@ -786,6 +819,7 @@ body{
     <div class="form-section">
       <div class="form-section-title">👤 व्यक्तिगत जानकारी</div>
       <div class="form-row"><label>पूरा नाम <em>*</em></label><input class="f-input" id="f-name" type="text" placeholder="जैसे: राम लाल मीना"></div>
+      <div class="form-row"><label>वैवाहिक स्थिति <em>*</em></label><select class="f-select" id="f-marital"><option value="">चुनें</option><option value="Unmarried">अविवाहित</option><option value="Divorced">तलाकशुदा (Divorcee)</option><option value="Nata Pratha">नाता प्रथा</option></select></div>
       <div class="form-row-2">
         <div class="form-row">
           <label>लिंग <em>*</em></label>
@@ -940,6 +974,7 @@ body{
           <div class="form-row"><label>नाम</label><input class="f-input" id="a-name" type="text"></div>
           <div class="form-row"><label>लिंग</label><select class="f-select" id="a-gender"><option value="">चुनें</option><option value="Male">लड़का</option><option value="Female">लड़की</option></select></div>
         </div>
+        <div class="form-row"><label>वैवाहिक स्थिति <em>*</em></label><select class="f-select" id="a-marital"><option value="">चुनें</option><option value="Unmarried">अविवाहित</option><option value="Divorced">तलाकशुदा (Divorcee)</option><option value="Nata Pratha">नाता प्रथा</option></select></div>
         <div class="form-row-2">
           <div class="form-row"><label>जन्म तिथि</label><input class="f-input" id="a-dob" type="text" placeholder="DD-MM-YYYY"></div>
           <div class="form-row"><label>ऊँचाई</label><input class="f-input" id="a-height" type="text" placeholder="5'8&quot;"></div>
@@ -1185,6 +1220,13 @@ body{
         <button class="pill" data-g="gender" data-v="Female">लड़की</button>
       </div>
     </div>
+    <div class="fg"><div class="fg-label">वैवाहिक स्थिति</div>
+      <div class="pill-row">
+        <button class="pill on" data-g="marital" data-v="">सभी</button>
+        <button class="pill" data-g="marital" data-v="Divorced">तलाकशुदा (Divorcee)</button>
+        <button class="pill" data-g="marital" data-v="Nata Pratha">नाता प्रथा</button>
+      </div>
+    </div>
     <div class="fg"><div class="fg-label">आयु / Age</div>
       <div class="range-row">
         <input type="number" id="ageMin" placeholder="18" min="18" max="70">
@@ -1341,6 +1383,7 @@ window.addEventListener('appinstalled',()=>{
 let currentPage = 'home';
 function showPage(page){
   currentPage=page;
+  if(document.getElementById('detailPage').classList.contains('open'))closeDetail();
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.id==='nav-'+page));
   ['about','privacy','contact','submit'].forEach(p=>{
     const el=document.getElementById('page-'+p);
@@ -1387,7 +1430,7 @@ function parseCSV(text){
   rows.slice(2).forEach((r,i)=>{
     if(!r[2])return;
     if((r[28]||"").toLowerCase()==="inactive")return;
-    ALL.push({id:i,name:r[2]||"",gender:r[3]||"",age:parseInt(r[5])||0,height:r[6]||"",complexion:r[7]||"",education:r[8]||"",job:r[9]||"",selfGotra:r[10]||"",motherGotra:r[11]||"",dadiGotra:r[12]||"",naniGotra:r[13]||"",fatherName:r[14]||"",fatherOccup:r[15]||"",jc:r[16]||"",presentAddr:r[17]||"",pDistrict:r[18]||"",pState:r[19]||"",nativeAddr:r[20]||"",nDistrict:r[21]||"",nState:r[22]||"",mobile:r[23]||"",whatsapp:r[24]||"",photo:r[25]||"",other:r[26]||"",rawWhatsapp:r[27]||""});
+    ALL.push({id:i,name:r[2]||"",gender:r[3]||"",age:parseInt(r[5])||0,height:r[6]||"",complexion:r[7]||"",education:r[8]||"",job:r[9]||"",selfGotra:r[10]||"",motherGotra:r[11]||"",dadiGotra:r[12]||"",naniGotra:r[13]||"",fatherName:r[14]||"",fatherOccup:r[15]||"",jc:r[16]||"",presentAddr:r[17]||"",pDistrict:r[18]||"",pState:r[19]||"",nativeAddr:r[20]||"",nDistrict:r[21]||"",nState:r[22]||"",mobile:r[23]||"",whatsapp:r[24]||"",photo:r[25]||"",other:r[26]||"",rawWhatsapp:r[27]||"",maritalStatus:r[29]||""});
   });
 }
 function refreshStates(){
@@ -1424,9 +1467,12 @@ function toggleBookmarksView(){
   applyFilters();
 }
 
+const MARITAL={"Unmarried":"अविवाहित","Divorced":"तलाकशुदा","Nata Pratha":"नाता प्रथा"};
+function maritalLabel(p){return MARITAL[p.maritalStatus]||"";}
+
 function applyFilters(){
   const q=(g("q")||"").toLowerCase().trim();
-  const gender=pill("gender"),jc=pill("jc");
+  const gender=pill("gender"),jc=pill("jc"),marital=pill("marital");
   const amin=parseInt(g("ageMin"))||0,amax=parseInt(g("ageMax"))||999;
   const edu=g("eduF").toLowerCase(),pd=g("pDist"),nd=g("nDist"),st=g("stateF");
   const avoid=avoidList();
@@ -1437,6 +1483,7 @@ function applyFilters(){
       if(!BOOKMARKS.includes(pid)) return false;
     }
     if(gender&&p.gender!==gender)return false;
+    if(marital&&p.maritalStatus!==marital)return false;
     if(jc&&!p.jc.toLowerCase().includes(jc.toLowerCase()))return false;
     if(p.age&&(p.age<amin||p.age>amax))return false;
     if(edu&&!p.education.toLowerCase().includes(edu))return false;
@@ -1457,8 +1504,8 @@ function applyFilters(){
     return true;
   });
   render();
-  renderChips({gender,jc,amin,amax,edu,pd,nd,st,avoid});
-  document.getElementById("filterBtn").classList.toggle("on",!!(gender||jc||zone>0||pd||nd||st||edu));
+  renderChips({gender,marital,jc,amin,amax,edu,pd,nd,st,avoid});
+  document.getElementById("filterBtn").classList.toggle("on",!!(gender||marital||jc||zone>0||pd||nd||st||edu));
 }
 
 // ── RENDER ────────────────────────────────────────────
@@ -1474,6 +1521,7 @@ function buildCard(p,i){
   function gt(val,lbl){if(!val)return"";const bad=avoid.includes(val.toLowerCase())?" bad":"";return`<span class="g-tag${bad}"><small>${lbl}</small>${val}</span>`;}
   const gotras=[gt(p.selfGotra,"स्व"),gt(p.motherGotra,"माँ"),gt(p.dadiGotra,"दादी"),gt(p.naniGotra,"नानी")].filter(Boolean).join("");
   const jcTag=p.jc&&p.jc!=="दोनों नहीं"?`<span class="tag hi">${p.jc}</span>`:"";
+  const maritalTag=maritalLabel(p)?`<span class="tag${p.maritalStatus==="Unmarried"?"":" hi"}">${maritalLabel(p)}</span>`:"";
   const addr1=[p.presentAddr,p.pDistrict,p.pState].filter(Boolean).join(", ");
   const addr2=[p.nativeAddr,p.nDistrict,p.nState].filter(Boolean).join(", ");
   const wa=(p.whatsapp||p.mobile||"").replace(/\D/g,"");
@@ -1492,7 +1540,7 @@ function buildCard(p,i){
     <div class="c-meta">
       <div class="c-name">${p.name||"—"}</div>
       <div class="c-sub">${[p.age?p.age+" वर्ष":"",p.height,p.complexion].filter(Boolean).join(" · ")||"—"}</div>
-      <div class="c-tags"><span class="tag">${p.gender==="Female"?"लड़की":"लड़का"}</span>${jcTag}</div>
+      <div class="c-tags"><span class="tag">${p.gender==="Female"?"लड़की":"लड़का"}</span>${jcTag}${maritalTag}</div>
     </div>
   </div>
   <div class="c-div"></div>
@@ -1505,8 +1553,10 @@ function buildCard(p,i){
   </div>
   ${addr1?`<div class="c-addr">📍 <span>${addr1}</span></div>`:""}
   ${addr2?`<div class="c-addr">🏡 <span>${addr2}</span></div>`:""}
-  <button class="btn-view-more" onclick="openDetail(${idx})">👁 पूरी Profile देखें</button>
-  <button class="btn-share-card" onclick="event.stopPropagation();shareProfile(${idx})">📤 Profile Share करें</button>
+  <div class="c-actions">
+    <button class="btn-view-more" onclick="openDetail(${idx})">👁 पूरी Profile</button>
+    <button class="btn-share-card" onclick="event.stopPropagation();shareProfile(${idx})">📤 Share</button>
+  </div>
   ${foot}
 </div>`;
 }
@@ -1546,6 +1596,7 @@ function shareProfile(idx){
   lines.push('');
   if(p.name) lines.push(`👤 *नाम:* ${p.name}`);
   if(p.gender) lines.push(`⚧ *लिंग:* ${p.gender==='Female'?'लड़की':'लड़का'}`);
+  if(maritalLabel(p)) lines.push(`💍 *वैवाहिक स्थिति:* ${maritalLabel(p)}`);
   if(p.age) lines.push(`🎂 *आयु:* ${p.age} वर्ष`);
   if(p.height) lines.push(`📏 *ऊँचाई:* ${p.height}`);
   if(p.education) lines.push(`🎓 *शिक्षा:* ${p.education}`);
@@ -1565,6 +1616,7 @@ function shareProfile(idx){
 function renderChips(f){
   const items=[];
   if(f.gender)items.push(f.gender==="Male"?"लड़का":"लड़की");
+  if(f.marital)items.push(MARITAL[f.marital]);
   if(f.jc)items.push(f.jc);
   if(f.amin>0)items.push("उम्र ≥ "+f.amin);
   if(f.amax<999)items.push("उम्र ≤ "+f.amax);
@@ -1599,7 +1651,7 @@ function updateZone(){
 
 // ── RESET / PANEL ─────────────────────────────────────
 function resetAll(){
-  ["gender","jc","zone"].forEach(grp=>{
+  ["gender","marital","jc","zone"].forEach(grp=>{
     document.querySelectorAll(`.pill[data-g="${grp}"]`).forEach(p=>p.classList.toggle("on",p.dataset.v===""||p.dataset.v==="0"));
   });
   zone=0;updateZone();
@@ -1631,7 +1683,7 @@ function switchTab(t){
 function collectFormData(prefix='f'){
   const G=id=>document.getElementById(prefix+'-'+id)?.value?.trim()||'';
   return{
-    name:G('name'),gender:G('gender'),dob:G('dob'),height:G('height'),
+    name:G('name'),gender:G('gender'),maritalStatus:G('marital'),dob:G('dob'),height:G('height'),
     complexion:G('complexion'),education:G('edu'),job:G('job'),
     selfGotra:G('sg'),motherGotra:G('mg'),dadiGotra:G('dg'),naniGotra:G('ng'),
     fatherName:G('fn'),fatherOccup:G('fo'),jc:G('jc'),
@@ -1648,6 +1700,7 @@ async function submitToSheet(data, statusId, btnId){
   if(!url){setStatus(statusId,'error','⚠️ Apps Script URL save करें (ऊपर)।');return false;}
   if(!data.name){setStatus(statusId,'error','⚠️ नाम जरूरी है।');return false;}
   if(!data.mobile){setStatus(statusId,'error','⚠️ Mobile नंबर जरूरी है।');return false;}
+  if(!data.maritalStatus){setStatus(statusId,'error','⚠️ वैवाहिक स्थिति चुनें।');return false;}
 
   document.getElementById(btnId).disabled=true;
   setStatus(statusId,'loading','⏳ Submit हो रहा है…');
@@ -1726,7 +1779,7 @@ async function parseWithAI(){
         [...el.options].forEach(o=>{if(o.value===val||o.text===val)o.selected=true;});
       } else el.value=val;
     };
-    F('name',parsed.name);F('gender',parsed.gender);F('dob',parsed.dob);
+    F('name',parsed.name);F('gender',parsed.gender);F('marital',parsed.maritalStatus);F('dob',parsed.dob);
     F('height',parsed.height);F('edu',parsed.education);F('job',parsed.job);
     F('sg',parsed.selfGotra);F('mg',parsed.motherGotra);
     F('dg',parsed.dadiGotra);F('ng',parsed.naniGotra);
@@ -1737,7 +1790,7 @@ async function parseWithAI(){
 
     // Preview
     const fields=[
-      ['नाम',parsed.name],['लिंग',parsed.gender],['जन्म तिथि',parsed.dob],
+      ['नाम',parsed.name],['लिंग',parsed.gender],['वैवाहिक स्थिति',MARITAL[parsed.maritalStatus]],['जन्म तिथि',parsed.dob],
       ['ऊँचाई',parsed.height],['शिक्षा',parsed.education],['नौकरी',parsed.job],
       ['Self Gotra',parsed.selfGotra],['Mother Gotra',parsed.motherGotra],
       ['Dadi Gotra',parsed.dadiGotra],['Nani Gotra',parsed.naniGotra],
@@ -1760,7 +1813,7 @@ async function parseWithAI(){
 async function submitAIForm(){
   const G=id=>document.getElementById('a-'+id)?.value?.trim()||'';
   const data={
-    name:G('name'),gender:G('gender'),dob:G('dob'),height:G('height'),
+    name:G('name'),gender:G('gender'),maritalStatus:G('marital'),dob:G('dob'),height:G('height'),
     education:G('edu'),job:G('job'),
     selfGotra:G('sg'),motherGotra:G('mg'),dadiGotra:G('dg'),naniGotra:G('ng'),
     fatherName:G('fn'),fatherOccup:G('fo'),jc:G('jc'),
@@ -1816,7 +1869,7 @@ function openDetail(idx){
         <div class="det-av">${p.photo?`<img src="${p.photo}">`:(p.gender==="Female"?"👩":"👨")}</div>
         <div>
           <div class="det-name">${p.name||"—"}</div>
-          <div class="det-sub">${[p.age?p.age+" वर्ष":"",p.height,p.complexion,p.gender==="Female"?"लड़की":"लड़का"].filter(Boolean).join(" · ")}</div>
+          <div class="det-sub">${[p.age?p.age+" वर्ष":"",p.height,p.complexion,p.gender==="Female"?"लड़की":"लड़का",maritalLabel(p)].filter(Boolean).join(" · ")}</div>
         </div>
       </div>
 
